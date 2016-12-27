@@ -2,7 +2,7 @@
 
 Components and decorators to connect react with inversify.
 
-**:warning: This library is in early development stage and doesn't have API set in stone and major changes can happen without warning. :warning:**
+**:warning: This library is in an early stage and doesn't have API set in stone. Major changes can happen without warning. :warning:**
 
 **:warning: Currently only supports TypeScript scenario with decorators and decorator metadata enabled. :warning:**
 
@@ -59,3 +59,21 @@ class ChildComponent extends React.Component<{}, {}> {
 * props:
     * `container` - container instance to be used
     * `standalone` - if not falsey, do not set `parent` of given container to the container passed down in react tree
+
+```ts
+class RootComponent extends React.Component<{}, {}> {
+    constructor(props: any, context: any) {
+        super(props, context);
+
+        this.container = new Container();
+        this.container.bind(Foo).toSelf();
+        this.container.bind(Bar).toSelf();
+    }
+
+    private readonly container: interfaces.Container;
+
+    render() {
+        return <Provider container={this.container}><div>{this.props.children}</div></Provider>;
+    }
+}
+```

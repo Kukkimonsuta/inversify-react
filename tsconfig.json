@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "lib": [
+            "dom", "es6", "es2015.promise", "es2015.reflect"
+        ],
+        "types": [
+            "reflect-metadata",
+            "jest"
+        ],
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "jsx": "react",
+        "sourceMap": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    }
+}

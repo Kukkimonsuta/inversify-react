@@ -8,7 +8,8 @@ Components and decorators to connect react with inversify.
 
 ## Installation
 
-* `npm install inversify-react`
+* `npm install --save react inversify reflect-metadata` (dependencies)
+* `npm install --save inversify-react`
 * in `tsconfig.json` set 
 ```json
 "compilerOptions": {

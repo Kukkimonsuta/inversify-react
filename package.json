@@ -1,6 +1,6 @@
 {
   "name": "inversify-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Components and decorators to connect react with inversify.",
   "main": "./dist/index.js",
   "typings": "./types/index.d.ts",
@@ -8,7 +8,6 @@
     "test": "jest --no-cache",
     "dev": "webpack -d -w",
     "prod": "webpack -p",
-
     "prepublish": "npm run prod"
   },
   "author": "Lukáš Novotný",

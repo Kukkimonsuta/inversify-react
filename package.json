@@ -37,8 +37,7 @@
   },
   "peerDependencies": {
     "react": "~15.4.1",
-    "inversify": "~3.0.0-rc.2",
-    "reflect-metadata": "~0.1.8"
+    "inversify": "~3.0.0-rc.2"
   },
   "jest": {
     "moduleFileExtensions": [

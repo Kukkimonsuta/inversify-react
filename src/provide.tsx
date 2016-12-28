@@ -1,4 +1,3 @@
-import { StatelessComponent, ComponentClass, PropTypes } from 'react';
 import { ensureAcceptContext, ensureProvideContext, createProperty } from './internal/utils';
 
 function provide(target: any, name: string, descriptor?: any) {
@@ -13,5 +12,5 @@ function provide(target: any, name: string, descriptor?: any) {
 	createProperty(target, name, type);
 }
 
-export default provide;
 export { provide };
+export default provide;

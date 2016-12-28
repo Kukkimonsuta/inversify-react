@@ -1,4 +1,3 @@
-import { StatelessComponent, ComponentClass, PropTypes } from 'react';
 import { ensureAcceptContext, createProperty } from './internal/utils';
 
 function resolve(target: any, name: string, descriptor?: any) {
@@ -12,5 +11,5 @@ function resolve(target: any, name: string, descriptor?: any) {
 	createProperty(target, name, type);
 }
 
-export default resolve;
 export { resolve };
+export default resolve;

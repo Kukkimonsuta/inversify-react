@@ -56,5 +56,5 @@ class Provider extends Component<ProviderProps, {}> {
 
 }
 
+export { ProviderProps, Provider };
 export default Provider;
-export { Provider };

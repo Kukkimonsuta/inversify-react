@@ -6,14 +6,19 @@
             "dom", "es6", "es2015.promise", "es2015.reflect"
         ],
         "types": [
-            "reflect-metadata",
-            "jest"
+            "reflect-metadata"
         ],
         "noImplicitAny": true,
+        "noUnusedLocals": true,
         "strictNullChecks": true,
         "jsx": "react",
-        "sourceMap": false,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationDir": "../types",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
-    }
+    },
+    "include": [
+        "./src/**/*"
+    ]
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import 'reflect-metadata';
 import { injectable } from 'inversify';
 
-import { provide, resolve, Provider } from '../src/index';
+import { provide, resolve } from '../src/index';
 import * as renderer from 'react-test-renderer';
 
 @injectable()

@@ -1,4 +1,4 @@
-import { StatelessComponent, ComponentClass, Component, PropTypes } from 'react';
+import { ComponentClass, Component, PropTypes } from 'react';
 import { interfaces, Container } from 'inversify';
 
 const ReactContextKey = "container";
@@ -156,9 +156,10 @@ function createProperty<P>(target: Component<P, any>, name: string, type: interf
 }
 
 export {
+	ReactContextKey, AdministrationKey,
+	DiClassAdministration, DiInstanceAdministration,
 	ensureAcceptContext,
 	ensureProvideContext, 
 	getContainer, createProperty,
-	getInstanceAdministration, DiInstanceAdministration,
-	ReactContextKey, AdministrationKey,
+	getClassAdministration, getInstanceAdministration, 
 };

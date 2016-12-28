@@ -2,17 +2,29 @@
   "name": "inversify-react",
   "version": "0.1.0",
   "description": "Components and decorators to connect react with inversify.",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "typings": "./types/index.d.ts",
   "scripts": {
-    "test": "jest --no-cache"
+    "test": "jest --no-cache",
+    "dev": "webpack -d -w",
+    "prod": "webpack -p",
+
+    "prepublish": "npm run prod"
   },
   "author": "Lukáš Novotný",
-  "license": "ISC",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kukkimonsuta/inversify-react.git"
+  },
+  "keywords": [
+    "inversify",
+    "react"
+  ],
   "devDependencies": {
     "@types/jest": "^16.0.2",
     "@types/react": "^0.14.55",
     "@types/react-test-renderer": "^15.4.0",
-    "awesome-typescript-loader": "^3.0.0-beta.17",
     "jest": "^17.0.0",
     "react": "^15.4.1",
     "react-addons-test-utils": "^15.4.1",

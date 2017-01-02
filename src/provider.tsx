@@ -26,6 +26,7 @@ class Provider extends Component<ProviderProps, {}> {
 
 		const administration: DiInstanceAdministration = {
 			container: props.container,
+			properties: {}
 		};
 
 		if (!props.standalone) {
@@ -46,7 +47,7 @@ class Provider extends Component<ProviderProps, {}> {
 
 	componentWillReceiveProps(nextProps: ProviderProps) {
 		if (nextProps.container !== this.props.container) {
-			throw new Error('Swapping container is not supported');
+			throw new Error('Swapping container is not supported. Try adding `key={container.guid}` to the `Provider`.');
 		}
 	}
 

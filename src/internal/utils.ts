@@ -13,6 +13,8 @@ interface DiClassAdministration {
 
 interface DiInstanceAdministration {
 	container: interfaces.Container;
+
+	properties: { [key: string]: () => any };
 }
 
 function getClassAdministration(target: any) {
@@ -63,6 +65,7 @@ function getInstanceAdministration(target: any) {
 
 		administration = {
 			container: container,
+			properties: {}
 		};
 
 		Object.defineProperty(target, AdministrationKey, {
@@ -139,18 +142,19 @@ function getContainer<P>(target: Component<P, any>) {
 }
 
 function createProperty<P>(target: Component<P, any>, name: string, type: interfaces.ServiceIdentifier<any>) {
-
-	let resolved = false;
-	let value: any;
-
 	Object.defineProperty(target, name, {
 		enumerable: true,
 		get() {
-			if (!resolved) {
-				value = getContainer(this).get(type);
-				resolved = true;
+			const administration = getInstanceAdministration(this);
+			let getter = administration.properties[name];
+
+			if (!getter) {
+				const value = getContainer(this).get(type);
+
+				getter = administration.properties[name] = () => value;
 			}
-			return value;
+
+			return getter();
 		}
 	});
 }

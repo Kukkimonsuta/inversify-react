@@ -4,30 +4,39 @@ Components and decorators to connect react with inversify.
 
 **:warning: This library is in an early stage and doesn't have API set in stone. Major changes can happen without warning. :warning:**
 
-**:warning: Currently only supports TypeScript scenario with decorators and decorator metadata enabled. :warning:**
-
 ## Installation
 
 * `npm install --save react inversify reflect-metadata` (dependencies)
 * `npm install --save inversify-react`
+
+## Installation (typescript)
+
 * in `tsconfig.json` set 
 ```json
 "compilerOptions": {
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "types": ["reflect-metadata"]
 }
 ```
 
-## Decorators
+## Installation (babel)
+
+https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy
+
+## React component decorators
 
 `@provide`
-
 * creates new container for declaring component and binds given service (using `bind(<type>).toSelf()`)
 * the new container inherits all services from parent container in the react tree (using `container.parent`)
+* requires `reflect-metadata`
 
 `@resolve`
 * obtains service from container passed down in the react tree
-* if the same component provides a service, container from current component is used
+* requires `reflect-metadata`
+
+`@resolve(serviceIdentifier)`
+* obtains service from container passed down in the react tree
 
 ```ts
 class RootComponent extends React.Component<{}, {}> {
@@ -46,8 +55,11 @@ class ChildComponent extends React.Component<{}, {}> {
     @resolve
     private readonly foo: Foo;
 
+    @resolve(Bar)
+    private readonly bar: any;
+
     render() {
-        return <div>{this.foo.name}</div>;
+        return <div>{this.foo.name} {this.bar.name}</div>;
     }
 }
 ```

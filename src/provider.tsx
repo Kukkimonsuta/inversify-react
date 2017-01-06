@@ -1,4 +1,4 @@
-import { Component, Children, PropTypes } from 'react';
+import * as React from 'react';
 import { interfaces } from 'inversify';
 import { ReactContextKey, getContainer, AdministrationKey, DiInstanceAdministration } from './internal/utils';
 
@@ -7,14 +7,14 @@ interface ProviderProps {
 	standalone?: boolean;
 }
 
-class Provider extends Component<ProviderProps, {}> {
+class Provider extends React.Component<ProviderProps, {}> {
 
 	static contextTypes = {
-		[ReactContextKey]: PropTypes.object,
+		[ReactContextKey]: React.PropTypes.object,
 	};
 
 	static childContextTypes = {
-		[ReactContextKey]: PropTypes.object.isRequired,
+		[ReactContextKey]: React.PropTypes.object.isRequired,
 	};
 
 	static defaultProps = {
@@ -52,7 +52,7 @@ class Provider extends Component<ProviderProps, {}> {
 	}
 
 	render() {
-		return Children.only(this.props.children);
+		return React.Children.only(this.props.children);
 	}
 
 }

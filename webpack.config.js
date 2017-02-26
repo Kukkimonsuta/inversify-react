@@ -23,7 +23,7 @@ module.exports = {
         rules: [
             { 
                 test: /\.(ts|tsx)$/, 
-                loader: 'ts-loader'
+                use: 'ts-loader'
             }
         ]
     },

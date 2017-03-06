@@ -1,5 +1,7 @@
 # inversify-react
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Kukkimonsuta/inversify-react.svg)](https://greenkeeper.io/)
+
 Components and decorators to connect react with inversify.
 
 **:warning: This library is in an early stage and doesn't have API set in stone. Major changes can happen without warning. :warning:**

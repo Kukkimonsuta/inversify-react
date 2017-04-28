@@ -1,4 +1,5 @@
-import { ComponentClass, Component, PropTypes } from 'react';
+import { ComponentClass, Component } from 'react';
+import * as PropTypes from 'prop-types';
 import { interfaces, Container } from 'inversify';
 
 const ReactContextKey = "container";

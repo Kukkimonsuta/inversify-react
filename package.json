@@ -20,24 +20,28 @@
     "inversify",
     "react"
   ],
+  "dependencies": {
+    "prop-types": "^15.5.8"
+  },
   "devDependencies": {
-    "@types/jest": "^18.1.1",
-    "@types/react": "^15.0.12",
-    "@types/react-test-renderer": "^15.4.2",
-    "inversify": "^3.3.0",
+    "@types/jest": "^19.2.2",
+    "@types/prop-types": "^15.5.1",
+    "@types/react": "^15.0.23",
+    "@types/react-test-renderer": "^15.5.0",
+    "inversify": "^4.1.0",
     "jest": "^19.0.2",
-    "react": "^15.4.2",
-    "react-addons-test-utils": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-test-renderer": "^15.4.2",
+    "react": "^15.5.4",
+    "react-addons-test-utils": "^15.5.1",
+    "react-dom": "^15.5.4",
+    "react-test-renderer": "^15.5.4",
     "reflect-metadata": "^0.1.10",
-    "ts-loader": "^2.0.1",
-    "typescript": "^2.2.1",
-    "webpack": "^2.2.1"
+    "ts-loader": "^2.0.3",
+    "typescript": "^2.3.1",
+    "webpack": "^2.4.1"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0-alpha",
-    "inversify": "^3.0.0"
+    "inversify": "^3.0.0 || ^4.0.0"
   },
   "jest": {
     "moduleFileExtensions": [

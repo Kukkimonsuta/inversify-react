@@ -5,17 +5,34 @@ import { interfaces, Container } from 'inversify';
 const ReactContextKey = "container";
 const AdministrationKey = "~$inversify-react";
 
+interface ServiceDescriptor {
+	scope: interfaces.BindingScope;
+	service: interfaces.ServiceIdentifier<any>;
+}
+
 interface DiClassAdministration {
 	accepts: boolean;
 	provides: boolean;
 
-	services: interfaces.ServiceIdentifier<any>[];
+	services: ServiceDescriptor[];
 }
 
 interface DiInstanceAdministration {
 	container: interfaces.Container;
 
 	properties: { [key: string]: () => any };
+}
+
+function findByService(services: ServiceDescriptor[], service: interfaces.ServiceIdentifier<any>) {
+	for (const descriptor of services) {
+		if (descriptor.service !== service) {
+			continue;
+		}
+
+		return descriptor;
+	}
+
+	return null;
 }
 
 function getClassAdministration(target: any) {
@@ -51,7 +68,22 @@ function getInstanceAdministration(target: any) {
 			container = new Container();
 
 			for (const service of classAdministration.services) {
-				container.bind(service).toSelf();
+				const bindingInWhenOnSytax = container.bind(service.service)
+					.toSelf();
+
+				let bindingWhenOnSyntax: interfaces.BindingWhenOnSyntax<any>;
+				switch (service.scope) {
+					case 'Singleton':
+						bindingWhenOnSyntax = bindingInWhenOnSytax.inSingletonScope();
+						break;
+
+					case 'Transient':
+						bindingWhenOnSyntax = bindingInWhenOnSytax.inTransientScope();
+						break;
+
+					default:
+						throw new Error(`Invalid service scope '${service.scope}'`);
+				}
 			}
 
 			if (parentContainer) {
@@ -100,12 +132,12 @@ function ensureAcceptContext<P>(target: ComponentClass<P>) {
 	administration.accepts = true;
 }
 
-function ensureProvideContext<P, T>(target: ComponentClass<P>, service: interfaces.ServiceIdentifier<T>) {
+function ensureProvideContext<P, T>(target: ComponentClass<P>, service: interfaces.ServiceIdentifier<T>, scope: interfaces.BindingScope = 'Singleton') {
 	const administration = getClassAdministration(target);
 
 	// provide the service if not already registered
-	if (administration.services.indexOf(service) === -1) {
-		administration.services.push(service);
+	if (!findByService(administration.services, service)) {
+		administration.services.push({ service, scope });
 	}
 
 	if (administration.provides) {
@@ -162,6 +194,7 @@ function createProperty<P>(target: Component<P, any>, name: string, type: interf
 
 export {
 	ReactContextKey, AdministrationKey,
+	ServiceDescriptor,
 	DiClassAdministration, DiInstanceAdministration,
 	ensureAcceptContext,
 	ensureProvideContext, 

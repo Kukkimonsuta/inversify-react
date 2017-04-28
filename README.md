@@ -27,9 +27,15 @@ https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy
 ## React component decorators
 
 `@provide`
-* creates new container for declaring component and binds given service (using `bind(<type>).toSelf()`)
+* creates new container for declaring component and binds given service (using `bind(<type>).toSelf().inSingletonScope()`)
 * the new container inherits all services from parent container in the react tree (using `container.parent`)
 * requires `reflect-metadata`
+
+`@provide.singleton`
+* same behaviour as `@provide`
+
+`@provide.transient`
+* same behaviour as `@provide` except service is bound in transient scope (`bind(<type>).toSelf().inTransientScope()`)
 
 `@resolve`
 * obtains service from container passed down in the react tree

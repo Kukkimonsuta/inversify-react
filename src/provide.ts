@@ -1,6 +1,14 @@
+import { interfaces } from 'inversify';
 import { ensureAcceptContext, ensureProvideContext, createProperty } from './internal/utils';
 
-function provide(target: any, name: string, descriptor?: any) {
+interface ProvideDecorator {
+	(target: any, name: string, descriptor?: any): void;
+
+	singleton: (target: any, name: string, descriptor?: any) => void;
+	transient: (target: any, name: string, descriptor?: any) => void;
+}
+
+function provideImplementation(target: any, name: string, scope?: interfaces.BindingScope) {
 	if (!Reflect || !Reflect.getMetadata) {
 		throw new Error('Decorator `provide` requires `reflect-metadata`');
 	}
@@ -11,10 +19,22 @@ function provide(target: any, name: string, descriptor?: any) {
 	}
 
 	ensureAcceptContext(target.constructor);
-	ensureProvideContext(target.constructor, type);
+	ensureProvideContext(target.constructor, type, scope);
 
 	createProperty(target, name, type);
 }
 
-export { provide };
+const provide = <ProvideDecorator>function provide(target: any, name: string, descriptor?: any) {
+	return provideImplementation(target, name);
+};
+
+provide.singleton = function provideSingleton(target: any, name: string, descriptor?: any) {
+	return provideImplementation(target, name, 'Singleton');
+}
+
+provide.transient = function provideTransient(target: any, name: string, descriptor?: any) {
+	return provideImplementation(target, name, 'Transient');
+}
+
+export { ProvideDecorator, provide };
 export default provide;

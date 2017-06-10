@@ -21,23 +21,23 @@
     "react"
   ],
   "dependencies": {
-    "prop-types": "^15.5.8"
+    "prop-types": "^15.5.10"
   },
   "devDependencies": {
-    "@types/jest": "^19.2.2",
+    "@types/jest": "^19.2.4",
     "@types/prop-types": "^15.5.1",
-    "@types/react": "^15.0.23",
+    "@types/react": "^15.0.27",
     "@types/react-test-renderer": "^15.5.0",
-    "inversify": "^4.1.0",
-    "jest": "^19.0.2",
+    "inversify": "^4.1.1",
+    "jest": "^20.0.4",
     "react": "^15.5.4",
     "react-addons-test-utils": "^15.5.1",
     "react-dom": "^15.5.4",
     "react-test-renderer": "^15.5.4",
     "reflect-metadata": "^0.1.10",
-    "ts-loader": "^2.0.3",
-    "typescript": "^2.3.1",
-    "webpack": "^2.4.1"
+    "ts-loader": "^2.1.0",
+    "typescript": "^2.3.4",
+    "webpack": "^2.6.1"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0-alpha",

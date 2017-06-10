@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
 
@@ -16,13 +17,13 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
     },
-
+    
     devtool: 'source-map',
 
     module: {
         rules: [
-            { 
-                test: /\.(ts|tsx)$/, 
+            {
+                test: /\.(ts|tsx)$/,
                 use: 'ts-loader'
             }
         ]

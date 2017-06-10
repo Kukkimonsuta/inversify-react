@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest --no-cache",
     "dev": "webpack -d -w",
-    "prod": "webpack -p",
+    "prod": "webpack --define process.env.NODE_ENV=\"production\"",
     "prepublish": "npm run prod"
   },
   "author": "Lukáš Novotný",

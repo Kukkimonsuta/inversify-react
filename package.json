@@ -8,7 +8,7 @@
     "test": "jest --no-cache",
     "dev": "webpack -d -w",
     "prod": "webpack --define process.env.NODE_ENV=\"production\"",
-    "prepublish": "npm run prod"
+    "prepublishOnly": "npm run prod"
   },
   "author": "Lukáš Novotný",
   "license": "Apache-2.0",

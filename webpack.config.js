@@ -41,6 +41,12 @@ module.exports = {
             commonjs2: "inversify",
             amd: "inversify",
             root: "Inversify"
+        },
+        "prop-types": {
+            commonjs: "prop-types",
+            commonjs2: "prop-types",
+            amd: "prop-types",
+            root: "PropTypes"
         }
     }
 };

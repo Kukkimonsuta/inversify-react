@@ -17,6 +17,7 @@ function resolve(target: any, name?: string, descriptor?: any) {
 		// factory
 		return function(target: any, name: string, descriptor?: any) {
 			applyResolveDecorator(target, name, serviceIdentifier);
+			return Object.getOwnPropertyDescriptor(target, name);
 		};
 	} else {
 		if (!Reflect || !Reflect.getMetadata) {
@@ -30,6 +31,7 @@ function resolve(target: any, name?: string, descriptor?: any) {
 
 		// decorator
 		applyResolveDecorator(target, name, type);
+		return Object.getOwnPropertyDescriptor(target, name);
 	}
 }
 

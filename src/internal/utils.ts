@@ -71,14 +71,13 @@ function getInstanceAdministration(target: any) {
 				const bindingInWhenOnSytax = container.bind(service.service)
 					.toSelf();
 
-				let bindingWhenOnSyntax: interfaces.BindingWhenOnSyntax<any>;
 				switch (service.scope) {
 					case 'Singleton':
-						bindingWhenOnSyntax = bindingInWhenOnSytax.inSingletonScope();
+						bindingInWhenOnSytax.inSingletonScope();
 						break;
 
 					case 'Transient':
-						bindingWhenOnSyntax = bindingInWhenOnSytax.inTransientScope();
+						bindingInWhenOnSytax.inTransientScope();
 						break;
 
 					default:

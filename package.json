@@ -5,10 +5,11 @@
   "main": "./dist/index.js",
   "typings": "./types/index.d.ts",
   "scripts": {
-    "test": "jest --no-cache",
+    "init": "npm install",
     "dev": "webpack -d -w",
     "prod": "webpack --define process.env.NODE_ENV=\"production\"",
-    "prepublishOnly": "npm run prod"
+    "prepublishOnly": "npm run prod",
+    "test": "jest --no-cache"
   },
   "author": "Lukáš Novotný",
   "license": "Apache-2.0",
@@ -24,20 +25,20 @@
     "prop-types": "^15.6.0"
   },
   "devDependencies": {
-    "@types/jest": "^21.1.2",
+    "@types/jest": "^21.1.9",
     "@types/prop-types": "^15.5.2",
-    "@types/react": "^16.0.10",
-    "@types/react-test-renderer": "^15.5.4",
-    "inversify": "^4.3.0",
-    "jest": "^21.2.1",
-    "react": "^16.0.0",
+    "@types/react": "^16.0.31",
+    "@types/react-test-renderer": "^16.0.0",
+    "inversify": "^4.9.0",
+    "jest": "^22.0.3",
+    "react": "^16.2.0",
     "react-addons-test-utils": "^15.6.2",
-    "react-dom": "^16.0.0",
-    "react-test-renderer": "^16.0.0",
+    "react-dom": "^16.2.0",
+    "react-test-renderer": "^16.2.0",
     "reflect-metadata": "^0.1.10",
-    "ts-loader": "^2.3.7",
-    "typescript": "^2.5.3",
-    "webpack": "^3.6.0"
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0-alpha",

@@ -13,6 +13,9 @@ function resolve(target: any, name: string, descriptor?: any): void;
 function resolve(target: any, name?: string, descriptor?: any) {
 	if (name === undefined) {
 		const serviceIdentifier = target as interfaces.ServiceIdentifier<any>;
+		if (!serviceIdentifier) {
+			throw new Error('Invalid property type.');
+		}
 
 		// factory
 		return function(target: any, name: string, descriptor?: any) {

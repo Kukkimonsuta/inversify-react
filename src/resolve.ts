@@ -7,8 +7,8 @@ function applyResolveDecorator(target: any, name: string, type: interfaces.Servi
 	createProperty(target, name, type);
 }
 
-function resolve(serviceIdentifier: interfaces.ServiceIdentifier<any>): (target: any, name: string, descriptor?: any) => void;
-function resolve(target: any, name: string, descriptor?: any): void;
+function resolve(serviceIdentifier: interfaces.ServiceIdentifier<any>): (target: any, name: string, descriptor?: any) => PropertyDescriptor;
+function resolve(target: any, name: string, descriptor?: any): PropertyDescriptor;
 
 function resolve(target: any, name?: string, descriptor?: any) {
 	if (name === undefined) {
@@ -20,6 +20,7 @@ function resolve(target: any, name?: string, descriptor?: any) {
 		// factory
 		return function(target: any, name: string, descriptor?: any) {
 			applyResolveDecorator(target, name, serviceIdentifier);
+			return Object.getOwnPropertyDescriptor(target, name);
 		};
 	} else {
 		if (!Reflect || !Reflect.getMetadata) {
@@ -33,6 +34,7 @@ function resolve(target: any, name?: string, descriptor?: any) {
 
 		// decorator
 		applyResolveDecorator(target, name, type);
+		return Object.getOwnPropertyDescriptor(target, name);
 	}
 }
 

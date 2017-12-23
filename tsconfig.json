@@ -9,7 +9,7 @@
             "reflect-metadata"
         ],
         "noImplicitAny": true,
-        "noUnusedLocals": true,
+        "noUnusedLocals": false,
         "strictNullChecks": true,
         "jsx": "react",
         "sourceMap": true,

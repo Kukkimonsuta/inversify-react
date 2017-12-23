@@ -1,0 +1,34 @@
+{
+  "name": "inversify-react-babel-sample",
+  "version": "1.0.0",
+  "description": "Babel sample for inversify-react.",
+  "main": "index.js",
+  "scripts": {
+    "init": "npm install",
+    "dev": "webpack -d -w",
+    "prod": "webpack --define process.env.NODE_ENV=\"'production'\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lukáš Novotný",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kukkimonsuta/inversify-react.git"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "babel-loader": "^7.1.2",
+    "inversify": "^4.9.0",
+    "inversify-react": "^0.2.3",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "reflect-metadata": "^0.1.10"
+  }
+}

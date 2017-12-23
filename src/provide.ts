@@ -2,10 +2,10 @@ import { interfaces } from 'inversify';
 import { ensureAcceptContext, ensureProvideContext, createProperty } from './internal/utils';
 
 interface ProvideDecorator {
-	(target: any, name: string, descriptor?: any): void;
+	(target: any, name: string, descriptor?: any): any;
 
-	singleton: (target: any, name: string, descriptor?: any) => void;
-	transient: (target: any, name: string, descriptor?: any) => void;
+	singleton: (target: any, name: string, descriptor?: any) => any;
+	transient: (target: any, name: string, descriptor?: any) => any;
 }
 
 function provideImplementation(target: any, name: string, scope?: interfaces.BindingScope) {
@@ -21,7 +21,7 @@ function provideImplementation(target: any, name: string, scope?: interfaces.Bin
 	ensureAcceptContext(target.constructor);
 	ensureProvideContext(target.constructor, type, scope);
 
-	createProperty(target, name, type);
+	return createProperty(target, name, type);
 }
 
 const provide = <ProvideDecorator>function provide(target: any, name: string, descriptor?: any) {

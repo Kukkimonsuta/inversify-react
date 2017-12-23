@@ -7,7 +7,7 @@
   "scripts": {
     "init": "npm install",
     "dev": "webpack -d -w",
-    "prod": "webpack --define process.env.NODE_ENV=\"production\"",
+    "prod": "webpack --define process.env.NODE_ENV=\"'production'\"",
     "prepublishOnly": "npm run prod",
     "test": "jest --no-cache"
   },

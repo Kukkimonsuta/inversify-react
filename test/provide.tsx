@@ -56,7 +56,7 @@ class ChildComponent extends React.Component<{}, {}> {
 }
 
 test('decorator provides services to self', () => {
-    const tree = renderer.create(
+    const tree: any = renderer.create(
         <RootComponent />
     ).toJSON();
 

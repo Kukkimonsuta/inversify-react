@@ -4,11 +4,11 @@ import { ensureAcceptContext, createProperty } from './internal/utils';
 function applyResolveDecorator(target: any, name: string, type: interfaces.ServiceIdentifier<any>) {
 	ensureAcceptContext(target.constructor);
 
-	createProperty(target, name, type);
+	return createProperty(target, name, type);
 }
 
-function resolve(serviceIdentifier: interfaces.ServiceIdentifier<any>): (target: any, name: string, descriptor?: any) => PropertyDescriptor;
-function resolve(target: any, name: string, descriptor?: any): PropertyDescriptor;
+function resolve(serviceIdentifier: interfaces.ServiceIdentifier<any>): (target: any, name: string, descriptor?: any) => any;
+function resolve(target: any, name: string, descriptor?: any): any;
 
 function resolve(target: any, name?: string, descriptor?: any) {
 	if (name === undefined) {
@@ -19,8 +19,7 @@ function resolve(target: any, name?: string, descriptor?: any) {
 
 		// factory
 		return function(target: any, name: string, descriptor?: any) {
-			applyResolveDecorator(target, name, serviceIdentifier);
-			return Object.getOwnPropertyDescriptor(target, name);
+			return applyResolveDecorator(target, name, serviceIdentifier);
 		};
 	} else {
 		if (!Reflect || !Reflect.getMetadata) {
@@ -33,8 +32,7 @@ function resolve(target: any, name?: string, descriptor?: any) {
 		}
 
 		// decorator
-		applyResolveDecorator(target, name, type);
-		return Object.getOwnPropertyDescriptor(target, name);
+		return applyResolveDecorator(target, name, type);
 	}
 }
 

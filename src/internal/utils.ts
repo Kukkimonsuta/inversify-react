@@ -189,6 +189,12 @@ function createProperty<P>(target: Component<P, any>, name: string, type: interf
 			return getter();
 		}
 	});
+
+	const descriptor = Object.getOwnPropertyDescriptor(target, name);
+	if (!descriptor)
+		throw new Error('Failed to define property');
+
+	return descriptor;
 }
 
 export {

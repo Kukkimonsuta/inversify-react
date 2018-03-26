@@ -1,6 +1,6 @@
 {
   "name": "inversify-react",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Components and decorators to connect react with inversify.",
   "main": "./dist/index.js",
   "typings": "./types/index.d.ts",

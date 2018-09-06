@@ -11,7 +11,8 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
         library: 'InversifyReact',
-        libraryTarget: 'umd'
+        libraryTarget: 'umd',
+        globalObject: `(typeof self !== 'undefined' ? self : this)`
     },
 
     resolve: {

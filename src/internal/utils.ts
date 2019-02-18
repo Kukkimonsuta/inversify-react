@@ -173,7 +173,12 @@ function getContainer<P>(target: Component<P, any>) {
 	return getInstanceAdministration(target).container;
 }
 
-function createProperty<P>(target: Component<P, any>, name: string, type: interfaces.ServiceIdentifier<any>) {
+interface PropertyOptions {
+	isOptional?: boolean;
+	defaultValue?: any;
+}
+
+function createProperty<P>(target: Component<P, any>, name: string, type: interfaces.ServiceIdentifier<any>, options: PropertyOptions) {
 	Object.defineProperty(target, name, {
 		enumerable: true,
 		get() {
@@ -181,7 +186,21 @@ function createProperty<P>(target: Component<P, any>, name: string, type: interf
 			let getter = administration.properties[name];
 
 			if (!getter) {
-				const value = getContainer(this).get(type);
+				const container = getContainer(this);
+
+				let value: any;
+				if (options.isOptional)
+				{
+					if (container.isBound(type)) {
+						value = getContainer(this).get(type);
+					} else {
+						value = options.defaultValue;
+					}
+				}
+				else
+				{
+					value = getContainer(this).get(type);
+				}
 
 				getter = administration.properties[name] = () => value;
 			}
@@ -203,6 +222,6 @@ export {
 	DiClassAdministration, DiInstanceAdministration,
 	ensureAcceptContext,
 	ensureProvideContext, 
-	getContainer, createProperty,
+	getContainer, createProperty, PropertyOptions,
 	getClassAdministration, getInstanceAdministration, 
 };

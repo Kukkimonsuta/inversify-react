@@ -21,7 +21,7 @@ function provideImplementation(target: any, name: string, scope?: interfaces.Bin
 	ensureAcceptContext(target.constructor);
 	ensureProvideContext(target.constructor, type, scope);
 
-	return createProperty(target, name, type);
+	return createProperty(target, name, type, {});
 }
 
 const provide = <ProvideDecorator>function provide(target: any, name: string, descriptor?: any) {

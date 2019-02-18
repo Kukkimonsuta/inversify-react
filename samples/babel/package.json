@@ -16,21 +16,21 @@
     "url": "https://github.com/Kukkimonsuta/inversify-react.git"
   },
   "devDependencies": {
-    "@babel/cli": "^7.1.5",
-    "@babel/core": "^7.1.5",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/plugin-proposal-decorators": "^7.1.2",
-    "@babel/plugin-transform-react-jsx": "^7.0.0",
-    "@babel/preset-env": "^7.1.5",
-    "webpack": "^4.25.1",
-    "webpack-cli": "^3.1.2"
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
+    "@babel/preset-env": "^7.3.1",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
   },
   "dependencies": {
-    "babel-loader": "^8.0.4",
+    "babel-loader": "^8.0.5",
     "inversify": "^5.0.1",
-    "inversify-react": "^0.2.7",
-    "react": "^16.6.1",
-    "react-dom": "^16.6.1",
-    "reflect-metadata": "^0.1.12"
+    "inversify-react": "^0.3.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "reflect-metadata": "^0.1.13"
   }
 }

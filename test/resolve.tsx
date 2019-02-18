@@ -120,3 +120,124 @@ test('resolve using service identifier (newable)', () => {
     expect(tree.children[0].type).toBe('div');
     expect(tree.children[0].children).toEqual(['foo']);
 });
+
+test('resolve optional using reflect metadata', () => {
+    class RootComponent extends React.Component<{}, {}> {
+        @provide
+        private readonly foo: Foo;
+    
+        render() {
+            return <div data-foo={this.foo.name}>{this.props.children}</div>;
+        }
+    }
+
+    class ChildComponent extends React.Component<{}, {}> {
+        @resolve.optional
+        private readonly foo: Foo;
+
+        @resolve.optional
+        private readonly bar?: Bar;
+
+        render() {
+            return <div>{this.foo && this.foo.name}{this.bar && this.bar.name}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <RootComponent>
+            <ChildComponent />
+        </RootComponent>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children[0].type).toBe('div');
+    expect(tree.children[0].children).toEqual(['foo']);
+});
+
+test('resolve optional using service identifier (string)', () => {
+    const container = new Container();
+    container.bind("FooFoo").to(Foo);
+
+    class ChildComponent extends React.Component<{}, {}> {
+        @resolve.optional("FooFoo")
+        private readonly foo: any;
+
+        @resolve.optional("BarBAr")
+        private readonly bar: any;
+
+        render() {
+            return <div>{this.foo && this.foo.name}{this.bar && this.bar.name}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <Provider container={container}>
+            <ChildComponent />
+        </Provider>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children).toEqual(['foo']);
+});
+
+test('resolve optional using service identifier (symbol)', () => {
+    const fooIdentifier = Symbol();
+    const barIdentifier = Symbol();
+
+    const container = new Container();
+    container.bind(fooIdentifier).to(Foo);
+
+    class ChildComponent extends React.Component<{}, {}> {
+        @resolve.optional(fooIdentifier)
+        private readonly foo: any;
+
+        @resolve.optional(barIdentifier)
+        private readonly bar: any;
+
+        render() {
+            return <div>{this.foo && this.foo.name}{this.bar && this.bar.name}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <Provider container={container}>
+            <ChildComponent />
+        </Provider>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children).toEqual(['foo']);
+});
+
+test('resolve optional using service identifier (newable)', () => {
+    class RootComponent extends React.Component<{}, {}> {
+        @provide
+        private readonly foo: Foo;
+    
+        render() {
+            return <div data-foo={this.foo.name}>{this.props.children}</div>;
+        }
+    }
+
+    class ChildComponent extends React.Component<{}, {}> {
+        @resolve.optional(Foo)
+        private readonly foo: any;
+
+        @resolve.optional(Bar)
+        private readonly bar: any;
+
+        render() {
+            return <div>{this.foo && this.foo.name}{this.bar && this.bar.name}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <RootComponent>
+            <ChildComponent />
+        </RootComponent>
+    ).toJSON();
+    
+    expect(tree.type).toBe('div');
+    expect(tree.children[0].type).toBe('div');
+    expect(tree.children[0].children).toEqual(['foo']);
+});

@@ -29,7 +29,7 @@ https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy
 `@provide`
 * creates new container for declaring component and binds given service (using `bind(<type>).toSelf().inSingletonScope()`)
 * the new container inherits all services from parent container in the react tree (using `container.parent`)
-* requires `reflect-metadata`
+* requires `reflect-metadata` and `emitDecoratorMetadata`
 
 `@provide.singleton`
 * same behaviour as `@provide`
@@ -38,11 +38,18 @@ https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy
 * same behaviour as `@provide` except service is bound in transient scope (`bind(<type>).toSelf().inTransientScope()`)
 
 `@resolve`
-* obtains service from container passed down in the react tree
-* requires `reflect-metadata`
+* obtains service from container passed down in the react tree, throws if service cannot be obtained
+* requires `reflect-metadata` and `emitDecoratorMetadata`
 
 `@resolve(serviceIdentifier)`
-* obtains service from container passed down in the react tree
+* obtains service from container passed down in the react tree, throws if service cannot be obtained
+
+`@resolve.optional`
+* obtains service from container passed down in the react tree, returns `undefined` if service cannot be obtained
+* requires `reflect-metadata` and `emitDecoratorMetadata`
+
+`@resolve.optional(serviceIdentifier, defaultValue?)`
+* obtains service from container passed down in the react tree, returns `defaultValue` if service cannot be obtained
 
 ```ts
 class RootComponent extends React.Component<{}, {}> {

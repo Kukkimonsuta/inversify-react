@@ -6,17 +6,33 @@ import { resolve, Provider } from '../../dist';
 
 @injectable()
 class FooService {
-    bar() {
-        return "world";
+    status() {
+        return "Hello from FooService";
+    }
+}
+
+@injectable()
+class BarService {
+    status() {
+        return "Hello from BarService";
     }
 }
 
 class TestComponent extends React.Component {
     @resolve(FooService)
-    service;
+    fooService;
+
+    @resolve.optional(BarService)
+    barService;
  
     render() {
-        return <div>Hello {this.service.bar()}!</div>;
+        return <div>
+            Hello word!
+            <ul>
+                <li>{this.fooService ? this.fooService.status() : 'FooService was not resolved'}</li>
+                <li>{this.barService ? this.barService.status() : 'BarService was not resolved'}</li>
+            </ul>
+        </div>;
     }
  }
 

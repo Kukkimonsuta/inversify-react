@@ -14,7 +14,7 @@
         "jsx": "react",
         "sourceMap": true,
         "declaration": true,
-        "declarationDir": "../types",
+        "declarationDir": "./types",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },

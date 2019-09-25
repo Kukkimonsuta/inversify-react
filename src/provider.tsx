@@ -46,7 +46,7 @@ class Provider extends React.Component<ProviderProps, {}> {
 		};
 	}
 
-	componentWillReceiveProps(nextProps: ProviderProps) {
+	UNSAFE_componentWillReceiveProps(nextProps: ProviderProps) {
 		if (nextProps.container !== this.props.container) {
 			throw new Error('Swapping container is not supported. Try adding `key={container.guid}` (inversify 4.x) / `key={container.id}` (inversify 5.x) to the `Provider`.');
 		}

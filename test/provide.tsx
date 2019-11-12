@@ -65,6 +65,33 @@ test('decorator provides services to self', () => {
     expect(tree.props['data-bar']).toMatch(/bar-\d+/);
 });
 
+test('decorator provides services to self outside of render method', () => {
+    class MyProvider extends React.Component {
+        @provide
+        private readonly foo: Foo;
+
+        private readonly fooName: string;
+
+        constructor(props: {}, context: {}) {
+            super(props, context);
+
+            this.fooName = this.foo.name;
+        }
+
+        render() {
+            return (
+                <div data-foo={this.fooName} />
+            );
+        }
+    }
+
+    const tree: any = renderer.create(
+        <MyProvider />
+    ).toJSON();
+
+    expect(tree.props['data-foo']).toMatch(/foo-\d+/);
+});
+
 test('decorator provides services to immediate children', () => {
     const tree: any = renderer.create(
         <RootComponent>

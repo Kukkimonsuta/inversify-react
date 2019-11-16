@@ -4,8 +4,32 @@ import { interfaces } from 'inversify';
 import { InversifyReactContext } from './internal';
 
 type ProviderProps = Readonly<{
+    // Inversify container to be used for that React subtree (children of Provider)
     container: interfaces.Container;
+
+    // Hierarchical DI configuration:
+    // standalone Provider will keep container isolated,
+    // otherwise (default behavior) it will try to find parent container in React tree
+    // and establish hierarchy of containers
+    // @see https://github.com/inversify/InversifyJS/blob/master/wiki/hierarchical_di.md
     standalone?: boolean;
+
+    // TODO:ideas: more callbacks?
+    //  ---
+    //  `onReady?: (container: interfaces.Container) => void`
+    //  before first render, but when hierarchy is already setup (because parent container might be important ofc),
+    //  e.g. to preinit something, before it gets used by some components:
+    //  ```
+    //  onReady={container => {
+    //    // e.g. when container comes from business-logic-heavy external module, independent from UI (React),
+    //    // and requires a little bit of additional UI-based configuration
+    //    container.get(Foo).initBasedOnUI(...)
+    //  }}
+    //  ```
+    //  ---
+    //  `onParent?: (self: interfaces.Container, parent: interfaces.Container) => interfaces.Container`
+    //  middleware-like behavior where we could intercept parent container and interfere with hierarchy or something
+    //
 }>;
 
 const Provider: React.FC<ProviderProps> = ({

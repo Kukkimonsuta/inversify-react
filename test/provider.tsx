@@ -1,31 +1,21 @@
 import * as React from 'react';
 import 'reflect-metadata';
 import { injectable, interfaces, Container } from 'inversify';
-
-import { resolve, Provider } from '../src/index';
 import * as renderer from 'react-test-renderer';
+
+import { resolve, Provider } from '../src';
 
 @injectable()
 class Foo { 
-    get name() {
-        return 'foo';
-    }
+    readonly name = 'foo';
 }
 
-@injectable()
-class Bar {
-    get name() {
-        return 'bar';
-    }
-}
-
-class RootComponent extends React.Component<{}, {}> {
-    constructor(props: any, context: any) {
+class RootComponent extends React.Component {
+    constructor(props: {}, context: {}) {
         super(props, context);
 
         this.container = new Container();
         this.container.bind(Foo).toSelf();
-        this.container.bind(Bar).toSelf();
     }
 
     private readonly container: interfaces.Container;
@@ -35,7 +25,7 @@ class RootComponent extends React.Component<{}, {}> {
     }
 }
 
-class ChildComponent extends React.Component<{}, {}> {
+class ChildComponent extends React.Component {
     @resolve
     private readonly foo: Foo;
 

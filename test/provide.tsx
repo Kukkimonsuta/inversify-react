@@ -1,9 +1,9 @@
 import * as React from 'react';
 import 'reflect-metadata';
 import { injectable } from 'inversify';
-
-import { provide, resolve } from '../src/index';
 import * as renderer from 'react-test-renderer';
+
+import { provide, resolve } from '../src';
 
 let _uid = 0x1000;
 function getUid() { return _uid++; };
@@ -34,7 +34,7 @@ class Bar {
     }
 }
 
-class RootComponent extends React.Component<{}, {}> {
+class RootComponent extends React.Component {
     @provide
     private readonly foo: Foo;
 
@@ -46,7 +46,7 @@ class RootComponent extends React.Component<{}, {}> {
     }
 }
 
-class ChildComponent extends React.Component<{}, {}> {
+class ChildComponent extends React.Component {
     @resolve
     private readonly foo: Foo;
 
@@ -112,7 +112,7 @@ test('decorator provides singleton service as default', () => {
 
 test('decorator provides singleton service when explicitly requested', () => {
 
-    class SingletonProviderComponent extends React.Component<{}, {}> {
+    class SingletonProviderComponent extends React.Component {
         @provide.singleton
         private readonly foo: Foo;
 
@@ -140,7 +140,7 @@ test('decorator provides singleton service when explicitly requested', () => {
 
 test('decorator provides transient service when explicitly requested', () => {
 
-    class TransientProviderComponent extends React.Component<{}, {}> {
+    class TransientProviderComponent extends React.Component {
         @provide.transient
         private readonly foo: Foo;
 

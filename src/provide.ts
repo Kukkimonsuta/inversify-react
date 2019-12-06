@@ -30,11 +30,11 @@ const provide = <ProvideDecorator>function provide(target: any, name: string, de
 
 provide.singleton = function provideSingleton(target: any, name: string, descriptor?: any) {
 	return provideImplementation(target, name, 'Singleton');
-}
+};
 
 provide.transient = function provideTransient(target: any, name: string, descriptor?: any) {
 	return provideImplementation(target, name, 'Transient');
-}
+};
 
 export { ProvideDecorator, provide };
 export default provide;

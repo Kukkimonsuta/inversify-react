@@ -1,9 +1,8 @@
 import { interfaces } from 'inversify';
 import { ensureAcceptContext, createProperty, PropertyOptions } from './internal/utils';
-import * as React from 'react';
 
 interface ResolveDecorator {
-	(serviceIdentifier: interfaces.ServiceIdentifier<any>): (target: any, name: string, descriptor?: any) => any;
+	(serviceIdentifier: interfaces.ServiceIdentifier<unknown>): (target: any, name: string, descriptor?: any) => any;
 	(target: any, name: string, descriptor?: any): any
 
 	optional: ResolveOptionalDecorator;
@@ -14,7 +13,7 @@ interface ResolveOptionalDecorator {
 	(target: any, name: string, descriptor?: any): any;
 }
 
-function applyResolveDecorator(target: any, name: string, type: interfaces.ServiceIdentifier<any>, options: PropertyOptions) {
+function applyResolveDecorator(target: any, name: string, type: interfaces.ServiceIdentifier<unknown>, options: PropertyOptions) {
 	ensureAcceptContext(target.constructor);
 
 	return createProperty(target, name, type, options);
@@ -44,7 +43,7 @@ const resolve = <ResolveDecorator>function resolve(target: any, name: string, de
 		// decorator
 		return applyResolveDecorator(target, name, type, {});
 	} else {
-		const serviceIdentifier = target as interfaces.ServiceIdentifier<any>;
+		const serviceIdentifier = target as interfaces.ServiceIdentifier<unknown>;
 		if (!serviceIdentifier) {
 			throw new Error('Invalid property type.');
 		}
@@ -58,7 +57,7 @@ const resolve = <ResolveDecorator>function resolve(target: any, name: string, de
 
 resolve.optional = <ResolveOptionalDecorator>function resolveOptional<T>(...args: unknown[]) {
 	if (typeof args[1] === 'string' && args.length === 3) {
-		const [target, name, descriptor] = args;	
+		const [target, name, descriptor] = args;
 		const type = getDesignType(target, name);
 
 		// decorator

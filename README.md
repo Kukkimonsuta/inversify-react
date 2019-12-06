@@ -52,7 +52,7 @@ https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy
 * obtains service from container passed down in the react tree, returns `defaultValue` if service cannot be obtained
 
 ```ts
-class RootComponent extends React.Component<{}, {}> {
+class RootComponent extends React.Component {
     @provide
     private readonly foo: Foo;
 
@@ -64,7 +64,7 @@ class RootComponent extends React.Component<{}, {}> {
     }
 }
 
-class ChildComponent extends React.Component<{}, {}> {
+class ChildComponent extends React.Component {
     @resolve
     private readonly foo: Foo;
 
@@ -87,8 +87,8 @@ class ChildComponent extends React.Component<{}, {}> {
     * `standalone` - if not falsey, do not set `parent` of given container to the container passed down in react tree
 
 ```ts
-class RootComponent extends React.Component<{}, {}> {
-    constructor(props: any, context: any) {
+class RootComponent extends React.Component {
+    constructor(props: {}, context: {}) {
         super(props, context);
 
         this.container = new Container();

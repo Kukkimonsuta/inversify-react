@@ -1,25 +1,21 @@
 import * as React from 'react';
 import 'reflect-metadata';
 import { injectable, Container } from 'inversify';
-
-import { provide, resolve, Provider } from '../src/index';
 import * as renderer from 'react-test-renderer';
+
+import { provide, resolve, Provider } from '../src';
 
 @injectable()
 class Foo { 
-    get name() {
-        return 'foo';
-    }
+    readonly name = 'foo';
 }
 
 @injectable()
 class Bar {
-    get name() {
-        return 'bar';
-    }
+    readonly name = 'bar';
 }
 
-class RootComponent extends React.Component<{}, {}> {
+class RootComponent extends React.Component {
     @provide
     private readonly foo: Foo;
 
@@ -31,8 +27,8 @@ class RootComponent extends React.Component<{}, {}> {
     }
 }
 
-test('resolve using reflect metadata', () => {
-    class ChildComponent extends React.Component<{}, {}> {
+test('resolve using reflect-metadata', () => {
+    class ChildComponent extends React.Component {
         @resolve
         private readonly foo: Foo;
 
@@ -54,10 +50,10 @@ test('resolve using reflect metadata', () => {
 
 test('resolve using service identifier (string)', () => {
     const container = new Container();
-    container.bind("FooFoo").to(Foo);
+    container.bind('FooFoo').to(Foo);
 
-    class ChildComponent extends React.Component<{}, {}> {
-        @resolve("FooFoo")
+    class ChildComponent extends React.Component {
+        @resolve('FooFoo')
         private readonly foo: any;
 
         render() {
@@ -81,7 +77,7 @@ test('resolve using service identifier (symbol)', () => {
     const container = new Container();
     container.bind(identifier).to(Foo);
 
-    class ChildComponent extends React.Component<{}, {}> {
+    class ChildComponent extends React.Component {
         @resolve(identifier)
         private readonly foo: any;
 
@@ -101,7 +97,7 @@ test('resolve using service identifier (symbol)', () => {
 });
 
 test('resolve using service identifier (newable)', () => {
-    class ChildComponent extends React.Component<{}, {}> {
+    class ChildComponent extends React.Component {
         @resolve(Foo)
         private readonly foo: any;
 
@@ -121,8 +117,8 @@ test('resolve using service identifier (newable)', () => {
     expect(tree.children[0].children).toEqual(['foo']);
 });
 
-test('resolve optional using reflect metadata', () => {
-    class RootComponent extends React.Component<{}, {}> {
+test('resolve optional using reflect-metadata', () => {
+    class RootComponent extends React.Component {
         @provide
         private readonly foo: Foo;
     
@@ -131,15 +127,15 @@ test('resolve optional using reflect metadata', () => {
         }
     }
 
-    class ChildComponent extends React.Component<{}, {}> {
+    class ChildComponent extends React.Component {
         @resolve.optional
-        private readonly foo: Foo;
+        private readonly foo?: Foo;
 
         @resolve.optional
         private readonly bar?: Bar;
 
         render() {
-            return <div>{this.foo && this.foo.name}{this.bar && this.bar.name}</div>;
+            return <div>{this.foo?.name}{this.bar?.name}</div>;
         }
     }
 
@@ -156,17 +152,17 @@ test('resolve optional using reflect metadata', () => {
 
 test('resolve optional using service identifier (string)', () => {
     const container = new Container();
-    container.bind("FooFoo").to(Foo);
+    container.bind('FooFoo').to(Foo);
 
-    class ChildComponent extends React.Component<{}, {}> {
-        @resolve.optional("FooFoo")
+    class ChildComponent extends React.Component {
+        @resolve.optional('FooFoo')
         private readonly foo: any;
 
-        @resolve.optional("BarBAr")
+        @resolve.optional('BarBar')
         private readonly bar: any;
 
         render() {
-            return <div>{this.foo && this.foo.name}{this.bar && this.bar.name}</div>;
+            return <div>{this.foo?.name}{this.bar?.name}</div>;
         }
     }
 
@@ -187,7 +183,7 @@ test('resolve optional using service identifier (symbol)', () => {
     const container = new Container();
     container.bind(fooIdentifier).to(Foo);
 
-    class ChildComponent extends React.Component<{}, {}> {
+    class ChildComponent extends React.Component {
         @resolve.optional(fooIdentifier)
         private readonly foo: any;
 
@@ -195,7 +191,7 @@ test('resolve optional using service identifier (symbol)', () => {
         private readonly bar: any;
 
         render() {
-            return <div>{this.foo && this.foo.name}{this.bar && this.bar.name}</div>;
+            return <div>{this.foo?.name}{this.bar?.name}</div>;
         }
     }
 
@@ -210,7 +206,7 @@ test('resolve optional using service identifier (symbol)', () => {
 });
 
 test('resolve optional using service identifier (newable)', () => {
-    class RootComponent extends React.Component<{}, {}> {
+    class RootComponent extends React.Component {
         @provide
         private readonly foo: Foo;
     
@@ -219,7 +215,7 @@ test('resolve optional using service identifier (newable)', () => {
         }
     }
 
-    class ChildComponent extends React.Component<{}, {}> {
+    class ChildComponent extends React.Component {
         @resolve.optional(Foo)
         private readonly foo: any;
 
@@ -227,7 +223,7 @@ test('resolve optional using service identifier (newable)', () => {
         private readonly bar: any;
 
         render() {
-            return <div>{this.foo && this.foo.name}{this.bar && this.bar.name}</div>;
+            return <div>{this.foo?.name}{this.bar?.name}</div>;
         }
     }
 

@@ -8,8 +8,12 @@ const ReactContextKey = 'container';
 // #DX: ES6 WeakMap could be used instead in the future when polyfill won't be required anymore
 const AdministrationKey = '~$inversify-react';
 
+const requestScope: interfaces.BindingScope = 'Request'; // type-safe and explicit exclusion of one binding scope
+// inversify-react does not support 'Request' binding scope, so here's explicit more narrow type
+type ProvideBindingScope = Exclude<interfaces.BindingScope, typeof requestScope>;
+
 type ServiceDescriptor = Readonly<{
-	scope: interfaces.BindingScope;
+	scope: ProvideBindingScope;
 	service: interfaces.ServiceIdentifier<unknown>;
 }>;
 
@@ -86,6 +90,7 @@ function getInstanceAdministration(target: any) {
 						break;
 
 					default:
+						const exhaustive: never = service.scope;
 						throw new Error(`Invalid service scope '${service.scope}'`);
 				}
 			}
@@ -136,7 +141,7 @@ function ensureAcceptContext(target: ComponentClass) {
 	administration.accepts = true;
 }
 
-function ensureProvideContext(target: ComponentClass, service: interfaces.ServiceIdentifier<unknown>, scope: interfaces.BindingScope = 'Singleton') {
+function ensureProvideContext(target: ComponentClass, service: interfaces.ServiceIdentifier<unknown>, scope: ProvideBindingScope = 'Singleton') {
 	const administration = getClassAdministration(target);
 
 	// provide the service if not already registered
@@ -224,6 +229,7 @@ function createProperty(target: Component, name: string, type: interfaces.Servic
 export {
 	ReactContextKey, AdministrationKey,
 	ServiceDescriptor,
+	ProvideBindingScope,
 	DiClassAdministration, DiInstanceAdministration,
 	ensureAcceptContext,
 	ensureProvideContext, 

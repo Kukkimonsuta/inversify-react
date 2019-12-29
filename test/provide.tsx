@@ -192,3 +192,39 @@ test('decorator provides transient service when explicitly requested', () => {
     expect(tree.children[0].children[1].type).toBe('div');
     expect(tree.children[0].children[1].children[0]).not.toEqual(tree.children[0].children[0].children[0]);
 });
+
+test('[fails] decorator provides when extend and override render', () => {
+    class BaseComponent extends React.Component {
+        @provide
+        private readonly foo: Foo;
+
+        render() {
+            return (
+                <>base render</>
+            );
+        }
+    }
+
+    class SubComponent extends BaseComponent {
+        render() {
+            return (
+                <>
+                    {super.render()}
+                    <ChildComponent />
+                </>
+            );
+        }
+    }
+
+    const tree: any = renderer.create(
+        <SubComponent />
+    ).toJSON();
+
+    // fails because no Provider available on React Context
+    // (only BaseComponent's render is decorated with Provider, but not SubComponent's render)
+    // TODO: try to fix with some @withProvider on render? or drop @provide completely
+
+    expect(tree[0]).toBe('base render');
+    expect(tree[1].type).toBe('div');
+    expect(tree[1].children[0]).toMatch(/foo-\d+/);
+});

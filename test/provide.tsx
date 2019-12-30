@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { injectable } from 'inversify';
 import * as renderer from 'react-test-renderer';
 
+import * as providerModule from '../src/provider';
 import { provide, resolve } from '../src';
 
 let _uid = 0x1000;
@@ -193,11 +194,13 @@ test('decorator provides transient service when explicitly requested', () => {
     expect(tree.children[0].children[1].children[0]).not.toEqual(tree.children[0].children[0].children[0]);
 });
 
-test('[fails] decorator provides when extend and override render', () => {
+test('decorator provides when extend and override render', () => {
+    const providerSpy = jest.spyOn(providerModule, 'Provider');
     class BaseComponent extends React.Component {
         @provide
-        private readonly foo: Foo;
+        protected readonly foo: Foo;
 
+        // not necessary to use @provide here, it still works automatically
         render() {
             return (
                 <>base render</>
@@ -206,6 +209,7 @@ test('[fails] decorator provides when extend and override render', () => {
     }
 
     class SubComponent extends BaseComponent {
+        @provide // must decorate, otherwise no Provider will be available in React DOM
         render() {
             return (
                 <>
@@ -220,10 +224,7 @@ test('[fails] decorator provides when extend and override render', () => {
         <SubComponent />
     ).toJSON();
 
-    // fails because no Provider available on React Context
-    // (only BaseComponent's render is decorated with Provider, but not SubComponent's render)
-    // TODO: try to fix with some @withProvider on render? or drop @provide completely
-
+    expect(providerSpy).toHaveBeenCalledTimes(1); // only single Provider component usage in React DOM
     expect(tree[0]).toBe('base render');
     expect(tree[1].type).toBe('div');
     expect(tree[1].children[0]).toMatch(/foo-\d+/);

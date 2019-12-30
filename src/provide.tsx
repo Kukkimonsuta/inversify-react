@@ -1,16 +1,20 @@
 import { interfaces } from 'inversify';
 import * as React from 'react';
-import { Component, ComponentClass } from 'react';
+import { Component, ComponentClass, useContext } from 'react';
 import { Provider } from './provider';
 import {
 	createProperty,
 	ensureAcceptContext,
+	AdministrationKey,
 	getClassAdministration,
 	getInstanceAdministration,
 	ServiceDescriptor,
 	ProvideBindingScope,
 	InversifyReactContext,
 } from './internal/utils';
+
+// we could use ES6 WeakMap or Symbols for associating, but we target ES5... see comment in internal/utils
+type noWeakMapsWorkaround = any;
 
 interface ProvideDecorator {
 	(target: any, name: string, descriptor?: any): any;
@@ -44,8 +48,25 @@ function provideImplementation(target: any, name: string, scope?: ProvideBinding
 	ensureAcceptContext(target.constructor);
 	ensureProvides(target, type, scope);
 
+	if (name === 'render') {
+		return Object.getOwnPropertyDescriptor(target, name);
+	}
+
 	return createProperty(target, name, type, {});
 }
+
+// internal utility component that is used with @provide decorator,
+// optionally injects Provider (needed for @provide to work) into React DOM only once in situations with subclassing
+const SoftProvider: React.FC<Readonly<{ container: interfaces.Container }>> = ({ container, children }) => {
+	const parentContainer = useContext(InversifyReactContext);
+	return parentContainer === container
+		? (<>{children}</>)
+		: (
+			<Provider container={container}>
+				{children}
+			</Provider>
+		);
+};
 
 function ensureProvides(component: Component, service: interfaces.ServiceIdentifier<unknown>, scope: ProvideBindingScope = 'Singleton') {
 	const componentClass = component.constructor as ComponentClass;
@@ -65,21 +86,23 @@ function ensureProvides(component: Component, service: interfaces.ServiceIdentif
 
 	// ensure component's `render` method is decorated with Provider,
 	// so child components would have context and would be able to resolve from it
-	// TODO:#review: subclassing may be hard :/ how much is that needed?
-	//  should there be some easy workaround? e.g.
-	//  @withProvider
-	//  render() { ... }
+	// TODO:#review: subclassing does not look very elegant – requires to decorate `render` with `@provide`
 	const instanceAdministration = getInstanceAdministration(component);
-	if (!instanceAdministration.provides) {
+	const renderAdministration: unknown = (component.render as noWeakMapsWorkaround)[AdministrationKey];
+	if (!renderAdministration) {
 		const originalRender = component.render;
 		component.render = function renderWithProvider() {
 			return (
-				<Provider container={instanceAdministration.container}>
+				<SoftProvider container={instanceAdministration.container}>
 					{originalRender.call(this)}
-				</Provider>
+				</SoftProvider>
 			);
 		};
-		instanceAdministration.provides = true;
+		Object.defineProperty(component.render, AdministrationKey, {
+			enumerable: false,
+			writable: false,
+			value: true,
+		});
 	}
 }
 

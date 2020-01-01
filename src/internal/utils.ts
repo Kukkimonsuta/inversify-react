@@ -1,5 +1,5 @@
 import { ComponentClass, Component, createContext } from 'react';
-import { interfaces, Container } from 'inversify';
+import { interfaces } from 'inversify';
 
 type InversifyReactContextValue = interfaces.Container | undefined;
 const InversifyReactContext = createContext<InversifyReactContextValue>(undefined);
@@ -12,21 +12,9 @@ const contextTypeKey = 'contextType';
 // #DX: ES6 WeakMap could be used instead in the future when polyfill won't be required anymore
 const AdministrationKey = '~$inversify-react';
 
-const requestScope: interfaces.BindingScope = 'Request'; // type-safe and explicit exclusion of one binding scope
-// inversify-react does not support 'Request' binding scope, so here's explicit more narrow type
-type ProvideBindingScope = Exclude<interfaces.BindingScope, typeof requestScope>;
-
-type ServiceDescriptor = Readonly<{
-	scope: ProvideBindingScope;
-	service: interfaces.ServiceIdentifier<unknown>;
-}>;
-
 // internal data associated with component class
 type DiClassAdministration = {
 	accepts: boolean;
-	provides: boolean;
-
-	services: ServiceDescriptor[];
 }
 
 // internal data associated with component instance
@@ -42,8 +30,6 @@ function getClassAdministration(target: any) {
 	if (!administration) {
 		administration = {
 			accepts: false,
-			provides: false,
-			services: [],
 		};
 
 		Object.defineProperty(target, AdministrationKey, {
@@ -56,62 +42,17 @@ function getClassAdministration(target: any) {
 	return administration;
 }
 
-function getInstanceAdministration(target: any) {
+function getInstanceAdministration(target: any): DiInstanceAdministration {
 	let administration: DiInstanceAdministration | undefined = target[AdministrationKey];
 
 	if (!administration) {
-		let classAdministration: DiClassAdministration = target.constructor[AdministrationKey];
-
-		const parentContainer = target.context as InversifyReactContextValue;
-
-		// we resolve container using 2 strategies:
-		// either own container gets created for @provide-ed services,
-		// or we find one on React context;
-		// lazy container allows us to collect all @provide meta first, then bind all
-		// TODO:#review: just to clarify: before `getInstanceAdministration` wasn't used in @provide,
-		//  but only at the time of resolving;
-		//  with new implementation @provide uses new prop `DiInstanceAdministration.provides`, so we defer container
-		let container: interfaces.Container | undefined;
-		const resolveContainer = (): interfaces.Container => container || (() => {
-			if (classAdministration.provides) {
-				container = new Container();
-
-				for (const service of classAdministration.services) {
-					const bindingInWhenOnSyntax = container.bind(service.service)
-						.toSelf();
-
-					switch (service.scope) {
-						case 'Singleton':
-							bindingInWhenOnSyntax.inSingletonScope();
-							break;
-
-						case 'Transient':
-							bindingInWhenOnSyntax.inTransientScope();
-							break;
-
-						default:
-							const exhaustive: never = service.scope;
-							throw new Error(`Invalid service scope '${service.scope}'`);
-					}
-				}
-
-				if (parentContainer) {
-					container.parent = parentContainer;
-				}
-			} else {
-				if (!parentContainer) {
-					throw new Error('Cannot use resolve services without any providers in component tree.');
-				}
-				container = parentContainer;
-			}
-			return container;
-		})();
-
+		const container = target.context as InversifyReactContextValue;
+		if (!container) {
+			throw new Error('Cannot use resolve services without any providers in component tree.');
+		}
 
 		administration = {
-			get container(): interfaces.Container {
-				return resolveContainer();
-			},
+			container,
 			properties: {},
 		};
 
@@ -161,10 +102,6 @@ function ensureAcceptContext(target: ComponentClass) {
 	}
 }
 
-function getContainer(target: Component) {
-	return getInstanceAdministration(target).container;
-}
-
 type PropertyOptions = Readonly<{
 	isOptional?: boolean;
 	defaultValue?: unknown;
@@ -211,10 +148,8 @@ function createProperty(target: Component, name: string, type: interfaces.Servic
 export {
 	InversifyReactContext,
 	AdministrationKey,
-	ServiceDescriptor,
-	ProvideBindingScope,
 	DiClassAdministration, DiInstanceAdministration,
 	ensureAcceptContext,
-	getContainer, createProperty, PropertyOptions,
+	createProperty, PropertyOptions,
 	getClassAdministration, getInstanceAdministration,
 };

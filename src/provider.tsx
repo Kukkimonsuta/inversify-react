@@ -4,8 +4,8 @@ import { interfaces } from 'inversify';
 import { InversifyReactContext } from './internal';
 
 type ProviderProps = Readonly<{
-    // Inversify container to be used for that React subtree (children of Provider)
-    container: interfaces.Container;
+    // Inversify container (or container factory) to be used for that React subtree (children of Provider)
+    container: interfaces.Container | (() => interfaces.Container);
 
     // Hierarchical DI configuration:
     // standalone Provider will keep container isolated,
@@ -32,6 +32,11 @@ type ProviderProps = Readonly<{
     //
 }>;
 
+// very basic typeguard, but should be enough for local usage
+function isContainer(x: ProviderProps['container']): x is interfaces.Container {
+	return 'resolve' in x;
+}
+
 const Provider: React.FC<ProviderProps> = ({
     children,
     container: containerProp,
@@ -39,15 +44,16 @@ const Provider: React.FC<ProviderProps> = ({
 }) => {
     // #DX: guard against `container` prop change and warn with explicit error
     const [container] = useState(containerProp);
-    if (containerProp !== container) {
-        throw new Error(
-            'Changing `container` prop (swapping container in runtime) is not supported.\n' +
-            'If you\'re rendering Provider in some list, try adding `key={container.id}` to the Provider.\n' +
-            'More info on React lists:\n' +
-            'https://reactjs.org/docs/lists-and-keys.html#keys\n' +
-            'https://reactjs.org/docs/reconciliation.html#recursing-on-children'
-        );
-    }
+    // ...but only if it's an actual Container and not a factory function (factory can be a new function on each render)
+	if (isContainer(containerProp) && containerProp !== container) {
+		throw new Error(
+			'Changing `container` prop (swapping container in runtime) is not supported.\n' +
+			'If you\'re rendering Provider in some list, try adding `key={container.id}` to the Provider.\n' +
+			'More info on React lists:\n' +
+			'https://reactjs.org/docs/lists-and-keys.html#keys\n' +
+			'https://reactjs.org/docs/reconciliation.html#recursing-on-children'
+		);
+	}
 
     // #DX: guard against `standalone` prop change and warn with explicit error
     const [standalone] = useState(standaloneProp);

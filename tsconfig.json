@@ -8,9 +8,7 @@
         "types": [
             "reflect-metadata"
         ],
-        "noImplicitAny": true,
-        "noUnusedLocals": false,
-        "strictNullChecks": true,
+        "strict": true,
         "jsx": "react",
         "sourceMap": true,
         "declaration": true,

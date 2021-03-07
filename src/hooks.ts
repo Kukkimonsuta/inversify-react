@@ -1,7 +1,7 @@
 import { interfaces } from 'inversify';
 import { useContext, useRef } from 'react';
 
-import { InversifyReactContext } from './internal/utils';
+import { InversifyReactContext } from './internal';
 
 /**
  * internal utility hook

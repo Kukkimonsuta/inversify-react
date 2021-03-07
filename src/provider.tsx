@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { interfaces } from 'inversify';
-import { InversifyReactContext } from './internal/utils';
+import { InversifyReactContext } from './internal';
 
 type ProviderProps = Readonly<{
     container: interfaces.Container;

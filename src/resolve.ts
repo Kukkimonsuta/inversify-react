@@ -1,5 +1,5 @@
 import { interfaces } from 'inversify';
-import { ensureAcceptContext, createProperty, PropertyOptions } from './internal/utils';
+import { ensureAcceptContext, createProperty, PropertyOptions } from './internal';
 
 interface ResolveDecorator {
 	(serviceIdentifier: interfaces.ServiceIdentifier<unknown>): (target: any, name: string, descriptor?: any) => any;

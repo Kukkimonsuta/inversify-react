@@ -11,9 +11,7 @@ import {
     useAllInjections,
     useContainer,
     useInjection,
-    useNamedInjection,
     useOptionalInjection,
-    useTaggedInjection,
 } from '../src';
 
 // We want to test types around hooks with signature overloads (as it's more complex),
@@ -269,29 +267,19 @@ describe('useOptionalInjection hook', () => {
     });
 });
 
-// [useNamedInjection, useTaggedInjection, useAllInjections] together because they're pretty trivial
-describe('other hooks', () => {
-    const useNamedInjectionSpy = jest.spyOn(hooksModule, 'useNamedInjection');
-    const useTaggedInjectionSpy = jest.spyOn(hooksModule, 'useTaggedInjection');
-    const useAllInjectionsSpy = jest.spyOn(hooksModule, 'useAllInjections');
+describe('useAllInjections hook', () => {
+    const hookSpy = jest.spyOn(hooksModule, 'useAllInjections');
 
     afterEach(() => {
-        useNamedInjectionSpy.mockClear();
-        useTaggedInjectionSpy.mockClear();
-        useAllInjectionsSpy.mockClear();
+        hookSpy.mockClear();
     });
 
-    test('resolves named, tagged and multi injections', () => {
+    test('resolves all injections', () => {
         const ChildComponent = () => {
-            const a = useNamedInjection(Bar, aTag);
-            const b = useNamedInjection(Bar, bTag);
-            const barA = useTaggedInjection(Bar, aTag, 'a')
             const stuff = useAllInjections(multiId);
             return (
                 <>
-                    <div>{`${a.name}, ${b.name}`}</div>
-                    <div>{barA.name}</div>
-                    <div>{stuff.join(',')}</div>
+                    {stuff.join(',')}
                 </>
             );
         };
@@ -302,13 +290,7 @@ describe('other hooks', () => {
             </RootComponent>
         ).toJSON();
 
-        expect(useNamedInjectionSpy).toHaveBeenCalledTimes(2);
-        expect(tree.children[0].children).toEqual(['bar-a, bar-b']);
-
-        expect(useTaggedInjectionSpy).toHaveBeenCalledTimes(1);
-        expect(tree.children[1].children).toEqual(['bar-a']);
-
-        expect(useAllInjectionsSpy).toHaveBeenCalledTimes(1);
-        expect(tree.children[2].children).toEqual(['x,y,z']);
+        expect(hookSpy).toHaveBeenCalledTimes(1);
+        expect(tree.children).toEqual(['x,y,z']);
     });
 });

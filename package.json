@@ -5,14 +5,17 @@
   "main": "./dist/index.js",
   "typings": "./types/index.d.ts",
   "scripts": {
-    "init": "npm install",
+    "init": "npm ci",
     "dev": "webpack --mode development -w",
     "prod": "webpack --mode production",
     "prepublishOnly": "npm run prod",
     "test": "jest --no-cache",
     "test:watch": "jest --no-cache --watchAll"
   },
-  "author": "Lukáš Novotný",
+  "author": { "name": "Lukáš Novotný", "url": "https://github.com/Kukkimonsuta" },
+  "contributors": [
+    { "name": "Pavel Pevnitskiy", "url": "https://github.com/fljot" }
+  ],
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

@@ -1,5 +1,8 @@
-import { provide } from './provide';
-import { resolve } from './resolve';
-import { Provider, ProviderProps } from './provider';
-
-export { provide, resolve, Provider, ProviderProps };
+export { resolve } from './resolve';
+export { Provider, ProviderProps } from './provider';
+export {
+    useAllInjections,
+    useContainer,
+    useInjection,
+    useOptionalInjection,
+} from './hooks';

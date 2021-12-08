@@ -37,7 +37,7 @@
     "@types/react": "^17.0.5",
     "@types/react-test-renderer": "^17.0.1",
     "conditional-type-checks": "^1.0.5",
-    "inversify": "^5.1.1",
+    "inversify": "^6.0.1",
     "jest": "^26.6.3",
     "react": "^16.9.0",
     "react-addons-test-utils": "^15.6.2",
@@ -52,6 +52,6 @@
   },
   "peerDependencies": {
     "react": "^16.3.0 || ^17.0.0",
-    "inversify": "^5.0.5"
+    "inversify": "^5.0.5 || ^6.0.1"
   }
 }

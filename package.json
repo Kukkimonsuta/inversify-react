@@ -33,25 +33,24 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "@types/react": "^17.0.5",
+    "@types/jest": "^27.0.3",
+    "@types/react": "^17.0.37",
     "@types/react-test-renderer": "^17.0.1",
     "conditional-type-checks": "^1.0.5",
     "inversify": "^6.0.1",
-    "jest": "^26.6.3",
+    "jest": "^27.4.5",
     "react": "^16.9.0",
-    "react-addons-test-utils": "^15.6.2",
     "react-dom": "^17.0.2",
     "react-test-renderer": "^17.0.2",
     "reflect-metadata": "^0.1.13",
-    "ts-jest": "^26.5.6",
-    "ts-loader": "^9.1.2",
-    "typescript": "^4.2.4",
-    "webpack": "^5.37.0",
-    "webpack-cli": "^4.7.0"
+    "ts-jest": "^27.1.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.4",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
   },
   "peerDependencies": {
-    "react": "^16.3.0 || ^17.0.0",
-    "inversify": "^5.0.5 || ^6.0.1"
+    "inversify": "^5.0.5 || ^6.0.1",
+    "react": "^16.3.0 || ^17.0.0 || ^18.0.0"
   }
 }

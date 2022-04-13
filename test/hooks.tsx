@@ -47,7 +47,11 @@ class OptionalService {
     readonly label = 'OptionalService' as const;
 }
 
-const RootComponent: React.FC = ({ children }) => {
+interface RootComponentProps {
+    children?: React.ReactNode;
+}
+
+const RootComponent: React.FC<RootComponentProps> = ({ children }) => {
     const [container] = useState(() => {
         const c = new Container();
         c.bind(Foo).toSelf();

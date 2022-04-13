@@ -14,6 +14,8 @@ type ProviderProps = Readonly<{
     // @see https://github.com/inversify/InversifyJS/blob/master/wiki/hierarchical_di.md
     standalone?: boolean;
 
+    children?: React.ReactNode;
+
     // TODO:ideas: more callbacks?
     //  ---
     //  `onReady?: (container: interfaces.Container) => void`

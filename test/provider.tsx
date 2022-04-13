@@ -11,7 +11,11 @@ class Foo {
     name = 'foo';
 }
 
-class RootComponent extends React.Component {
+interface RootComponentProps {
+    children?: React.ReactNode;
+}
+
+class RootComponent extends React.Component<RootComponentProps> {
     constructor(props: {}, context: {}) {
         super(props, context);
 
@@ -111,7 +115,7 @@ describe('Provider DX', () => {
         let renderCount = 0;
         let forceUpdate = () => {};
 
-        const FunctionalRootComponent: React.FC = () => {
+        const FunctionalRootComponent: React.FC<{ children?: React.ReactNode }> = () => {
             renderCount++;
             const [s, setS] = useState(true);
             forceUpdate = () => setS(!s);

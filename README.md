@@ -251,6 +251,48 @@ constructor(props: {}, context: {}) {
 }
 ```
 
+### @resolve.all
+```ts
+@resolve.all('Foo')
+private readonly foo?: Foo[];
+```
+* tries to resolve all services from container, fails if no services are bound to given service identifier
+* requires `reflect-metadata` and `emitDecoratorMetadata`, but __cannot be used without explicitly specifying service identifier__
+
+`@resolve.all(serviceId)`
+* obtains services from container passed down in the React tree
+
+
+```ts
+class ChildComponent extends React.Component {
+    @resolve.all(Baz)
+    private readonly opt?: Baz[];
+    
+    ...
+}
+```
+
+### @resolve.optional.all
+```ts
+@resolve.optional.all('Foo')
+private readonly foo?: Foo[];
+```
+* tries to resolve all services from container, returns empty array if none are registered
+* requires `reflect-metadata` and `emitDecoratorMetadata`, but __cannot be used without explicitly specifying service identifier__
+
+`@resolve.optional.all(serviceId)`
+* obtains services from container passed down in the React tree
+
+
+```ts
+class ChildComponent extends React.Component {
+    @resolve.optional.all(Baz)
+    private readonly opt?: Baz[];
+    
+    ...
+}
+```
+
 ## Notes, tips
 1. \[TypeScript tip\] `private readonly` for `@resolve`-ed fields is not required, but technically it's more accurate, gives better semantics and all.
 2. \[TypeScript tip\] `!` for `@resolve`-ed fields is needed for [strictPropertyInitialization](https://www.typescriptlang.org/tsconfig#strictPropertyInitialization) / [strict](https://www.typescriptlang.org/tsconfig#strict) flags (*which are highly recommended*).

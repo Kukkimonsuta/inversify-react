@@ -6,10 +6,18 @@ interface ResolveDecorator {
 	(target: any, name: string, descriptor?: any): any
 
 	optional: ResolveOptionalDecorator;
+	all: ResolveAllDecorator;
 }
 
 interface ResolveOptionalDecorator {
 	<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, defaultValue?: T): (target: any, name: string, descriptor?: any) => any;
+	(target: any, name: string, descriptor?: any): any;
+	
+	all: ResolveAllDecorator;
+}
+
+interface ResolveAllDecorator {
+	<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): (target: any, name: string, descriptor?: any) => any;
 	(target: any, name: string, descriptor?: any): any;
 }
 
@@ -69,6 +77,40 @@ resolve.optional = <ResolveOptionalDecorator>function resolveOptional<T>(...args
 		// factory
 		return function(target: any, name: string, descriptor?: any) {
 			return applyResolveDecorator(target, name, serviceIdentifier, { isOptional: true, defaultValue });
+		};
+	}
+}
+
+resolve.all = <ResolveAllDecorator>function resolveAll<T>(...args: unknown[]) {
+	if (typeof args[1] === 'string' && args.length === 3) {
+		const [target, name, descriptor] = args;
+		const type = getDesignType(target, name);
+
+		// decorator
+		return applyResolveDecorator(target, name, type, { isAll: true });
+	} else {
+		const serviceIdentifier = args[0] as interfaces.ServiceIdentifier<T>;
+
+		// factory
+		return function(target: any, name: string, descriptor?: any) {
+			return applyResolveDecorator(target, name, serviceIdentifier, { isAll: true });
+		};
+	}
+}
+
+resolve.optional.all = <ResolveAllDecorator>function resolveAll<T>(...args: unknown[]) {
+	if (typeof args[1] === 'string' && args.length === 3) {
+		const [target, name, descriptor] = args;
+		const type = getDesignType(target, name);
+
+		// decorator
+		return applyResolveDecorator(target, name, type, { isAll: true });
+	} else {
+		const serviceIdentifier = args[0] as interfaces.ServiceIdentifier<T>;
+
+		// factory
+		return function(target: any, name: string, descriptor?: any) {
+			return applyResolveDecorator(target, name, serviceIdentifier, { isAll: true, isOptional: true });
 		};
 	}
 }

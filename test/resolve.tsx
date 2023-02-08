@@ -8,12 +8,17 @@ import { resolve, Provider } from '../src';
 
 @injectable()
 class Foo { 
-    readonly name = 'foo';
+    readonly name: string = 'foo';
+}
+
+@injectable()
+class ExtendedFoo extends Foo { 
+    readonly name: string = 'extendedfoo';
 }
 
 @injectable()
 class Bar {
-    readonly name = 'bar';
+    readonly name: string = 'bar';
 }
 
 interface RootComponentProps {
@@ -124,6 +129,7 @@ test('resolve using service identifier (newable)', () => {
     expect(tree.children[0].children).toEqual(['foo']);
 });
 
+// optional
 test('resolve optional using reflect-metadata', () => {
     const container = new Container();
     container.bind(Foo).toSelf();
@@ -229,6 +235,214 @@ test('resolve optional using service identifier (newable)', () => {
 
     expect(tree.type).toBe('div');
     expect(tree.children).toEqual(['foo']);
+});
+
+// all
+test('resolve all using reflect-metadata [cannot be done, not enough information from typescript]', () => {
+    const container = new Container();
+    container.bind(Foo).toSelf();
+    container.bind(Foo).to(ExtendedFoo);
+
+    class ChildComponent extends React.Component {
+        @resolve.all
+        private readonly foo?: Foo[];
+
+        render() {
+            return <div>{this.foo?.map(f => f.name)}</div>;
+        }
+    }
+
+    expect(() => {
+        const tree: any = renderer.create(
+            <Provider container={container}>
+                <ChildComponent />
+            </Provider>
+        ).toJSON();
+    }).toThrowError("No matching bindings found for serviceIdentifier: Array");
+});
+
+test('resolve all using service identifier (string)', () => {
+    const container = new Container();
+    container.bind('FooFoo').to(Foo);
+    container.bind('FooFoo').to(ExtendedFoo);
+
+    class ChildComponent extends React.Component {
+        @resolve.all('FooFoo')
+        private readonly foo: any[];
+
+        render() {
+            return <div>{this.foo?.map(f => f.name)}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <Provider container={container}>
+            <ChildComponent />
+        </Provider>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+});
+
+test('resolve all using service identifier (symbol)', () => {
+    const fooIdentifier = Symbol();
+
+    const container = new Container();
+    container.bind(fooIdentifier).to(Foo);
+    container.bind(fooIdentifier).to(ExtendedFoo);
+
+    class ChildComponent extends React.Component {
+        @resolve.all(fooIdentifier)
+        private readonly foo: any[];
+
+        render() {
+            return <div>{this.foo?.map(f => f.name)}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <Provider container={container}>
+            <ChildComponent />
+        </Provider>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+});
+
+test('resolve all using service identifier (newable)', () => {
+    const container = new Container();
+    container.bind(Foo).toSelf();
+    container.bind(Foo).to(ExtendedFoo);
+
+    class ChildComponent extends React.Component {
+        @resolve.all(Foo)
+        private readonly foo: any[];
+
+        render() {
+            return <div>{this.foo?.map(f => f.name)}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <Provider container={container}>
+            <ChildComponent />
+        </Provider>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+});
+
+// optional all
+test('resolve optional all using reflect-metadata [cannot be done, not enough information from typescript]', () => {
+    const container = new Container();
+    container.bind(Foo).toSelf();
+    container.bind(Foo).to(ExtendedFoo);
+
+    class ChildComponent extends React.Component {
+        @resolve.all
+        private readonly foo?: Foo[];
+
+        @resolve.optional.all
+        private readonly bar: Bar[];
+
+        render() {
+            return <div>{this.foo?.map(f => f.name)}</div>;
+        }
+    }
+
+    expect(() => {
+        const tree: any = renderer.create(
+            <Provider container={container}>
+                <ChildComponent />
+            </Provider>
+        ).toJSON();
+    }).toThrowError("No matching bindings found for serviceIdentifier: Array");
+});
+
+test('resolve optional all using service identifier (string)', () => {
+    const container = new Container();
+    container.bind('FooFoo').to(Foo);
+    container.bind('FooFoo').to(ExtendedFoo);
+
+    class ChildComponent extends React.Component {
+        @resolve.all('FooFoo')
+        private readonly foo: any[];
+
+        @resolve.optional.all('BarBar')
+        private readonly bar: any[];
+
+        render() {
+            return <div>{this.foo?.map(f => f.name)}{this.bar?.map(f => f.name)}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <Provider container={container}>
+            <ChildComponent />
+        </Provider>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+});
+
+test('resolve optional all using service identifier (symbol)', () => {
+    const fooIdentifier = Symbol();
+
+    const container = new Container();
+    container.bind(fooIdentifier).to(Foo);
+    container.bind(fooIdentifier).to(ExtendedFoo);
+
+    class ChildComponent extends React.Component {
+        @resolve.all(fooIdentifier)
+        private readonly foo: any[];
+
+        @resolve.optional.all(Bar)
+        private readonly bar: any[];
+
+        render() {
+            return <div>{this.foo?.map(f => f.name)}{this.bar?.map(f => f.name)}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <Provider container={container}>
+            <ChildComponent />
+        </Provider>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+});
+
+test('resolve optional all using service identifier (newable)', () => {
+    const container = new Container();
+    container.bind(Foo).toSelf();
+    container.bind(Foo).to(ExtendedFoo);
+
+    class ChildComponent extends React.Component {
+        @resolve.all(Foo)
+        private readonly foo: any[];
+
+        @resolve.optional.all(Bar)
+        private readonly bar: any[];
+
+        render() {
+            return <div>{this.foo?.map(f => f.name)}{this.bar?.map(f => f.name)}</div>;
+        }
+    }
+
+    const tree: any = renderer.create(
+        <Provider container={container}>
+            <ChildComponent />
+        </Provider>
+    ).toJSON();
+
+    expect(tree.type).toBe('div');
+    expect(tree.children).toEqual(['foo', 'extendedfoo']);
 });
 
 describe('limitations', () => {

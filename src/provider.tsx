@@ -77,10 +77,10 @@ const Provider: React.FC<ProviderProps> = ({
                     'Perhaps you meant to configure Provider as \`standalone={true}\`?'
                 );
             }
-            if (container.parent) {
+            if (container.parent && container.parent !== parentContainer) {
                 throw new Error(
                     'Ambiguous containers hierarchy.\n' +
-                    'Provider has found a parent for specified `container`, but it already has a parent.\n' +
+                    'Provider has found a parent for specified `container`, but it already has a different parent.\n' +
                     'Learn more at https://github.com/Kukkimonsuta/inversify-react/blob/v0.5.0/src/provider.tsx'
                     // It is likely one of two:
                     //

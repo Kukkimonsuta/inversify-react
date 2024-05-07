@@ -70,6 +70,15 @@ Usage is pretty similar to [React Context](https://reactjs.org/docs/context.html
         ...
     </Provider>
     ```
+    or 
+    ```js
+    import { ModuleProvider } from 'inversify-react';
+    ...
+
+    <ModuleProvider modules={[coreModule, userModule]}>
+        ...
+    </ModuleProvider>
+    ```
 
 2. Use dependencies from that container in child components
     ```ts
@@ -148,6 +157,21 @@ class AppOrModuleRoot extends React.Component {
 }
 ```
 
+## ModuleProvider
+
+```js
+<ModuleProvider modules={[coreModule, userModule]}>
+    ...
+</ModuleProvider>
+```
+
+* `ModuleProvider` implements the full functionality of the `Provider`
+* it creates a [Container](https://github.com/inversify/InversifyJS/blob/master/wiki/container_api.md) inside, load all [ContainerModule](https://github.com/inversify/InversifyJS/blob/master/wiki/container_modules.md) and passes `Container` to the `Provider`
+* when a component is unmounted it will unload all modules. This way, you can reap all the [benefits of Inversify](https://github.com/inversify/InversifyJS/blob/master/wiki/pre_destroy.md).
+* props:
+    * `modules` - array of [ContainerModule](https://github.com/inversify/InversifyJS/blob/master/wiki/container_modules.md)
+    * `containerOpts` - (optional prop, `false` by default) whether to skip [hierarchy of containers](https://github.com/inversify/InversifyJS/blob/master/wiki/hierarchical_di.md). Could be useful if you already control container hierarchy and would like to ignore React-tree-based hierarchy. 
+    * other `Provider` props excluding `container`
 
 ## React hooks
 

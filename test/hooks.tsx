@@ -2,8 +2,8 @@ import 'reflect-metadata';
 import { Container, injectable, interfaces, unmanaged } from 'inversify';
 import * as React from 'react';
 import { useState } from 'react';
-import * as renderer from 'react-test-renderer';
 import { assert, IsExact } from 'conditional-type-checks';
+import { render } from '@testing-library/react';
 
 import * as hooksModule from '../src/hooks'; // for jest.spyOn
 import {
@@ -96,22 +96,24 @@ describe('useContainer hook', () => {
     test('resolves container from context', () => {
         const container = new Container();
 
-        const tree: any = renderer.create(
+        const tree = render(
             <Provider container={container}>
                 <ChildComponent/>
             </Provider>
-        ).toJSON();
+        );
+
+        const fragment = tree.asFragment();
 
         expect(hookSpy).toHaveBeenCalledTimes(1);
-        expect(hookSpy).lastReturnedWith(container);
-        expect(tree.type).toBe('div');
-        expect(tree.children[0]).toEqual(`${container.id}`);
+        expect(hookSpy).toHaveLastReturnedWith(container);
+        expect(fragment.children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].textContent).toEqual(`${container.id}`);
     });
 
     test('throws when no context found (missing Provider)', () => {
         expect(() => {
-            renderer.create(<ChildComponent/>)
-        }).toThrowError('Cannot find Inversify container on React Context. `Provider` component is missing in component tree.');
+            render(<ChildComponent/>);
+        }).toThrow('Cannot find Inversify container on React Context. `Provider` component is missing in component tree.');
         // unfortunately currently it produces console.error, but it's only question of aesthetics
         // @see https://github.com/facebook/react/issues/15520
 
@@ -127,15 +129,17 @@ describe('useInjection hook', () => {
             return <div>{foo.name}</div>;
         };
 
-        const tree: any = renderer.create(
+        const tree = render(
             <RootComponent>
                 <ChildComponent />
             </RootComponent>
-        ).toJSON();
+        );
 
-        expect(tree.type).toBe('div');
-        expect(tree.children[0].type).toBe('div');
-        expect(tree.children[0].children).toEqual(['foo']);
+        const fragment = tree.asFragment();
+
+        expect(fragment.children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].children[0].textContent).toEqual('foo');
     });
 
     test('resolves using service identifier (string)', () => {
@@ -147,14 +151,16 @@ describe('useInjection hook', () => {
             return <div>{foo.name}</div>;
         };
 
-        const tree: any = renderer.create(
+        const tree = render(
             <Provider container={container}>
                 <ChildComponent/>
             </Provider>
-        ).toJSON();
+        );
 
-        expect(tree.type).toBe('div');
-        expect(tree.children).toEqual(['foo']);
+        const fragment = tree.asFragment();
+
+        expect(fragment.children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].textContent).toEqual('foo');
     });
 
     test('resolves using service identifier (symbol)', () => {
@@ -170,14 +176,16 @@ describe('useInjection hook', () => {
             return <div>{foo.name}</div>;
         };
 
-        const tree: any = renderer.create(
+        const tree = render(
             <Provider container={container}>
                 <ChildComponent/>
             </Provider>
-        ).toJSON();
+        );
 
-        expect(tree.type).toBe('div');
-        expect(tree.children).toEqual(['foo']);
+        const fragment = tree.asFragment();
+
+        expect(fragment.children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].textContent).toEqual('foo');
     });
 });
 
@@ -207,15 +215,17 @@ describe('useOptionalInjection hook', () => {
             );
         };
 
-        const tree: any = renderer.create(
+        const tree = render(
             <RootComponent>
                 <ChildComponent/>
             </RootComponent>
-        ).toJSON();
+        );
+
+        const fragment = tree.asFragment();
 
         expect(hookSpy).toHaveBeenCalledTimes(1);
         expect(hookSpy).toHaveReturnedWith(undefined);
-        expect(tree.children).toEqual(['missing']);
+        expect(fragment.children[0].textContent).toEqual('missing');
     });
 
     test('resolves using fallback to default value', () => {
@@ -239,15 +249,17 @@ describe('useOptionalInjection hook', () => {
             );
         };
 
-        const tree: any = renderer.create(
+        const tree = render(
             <RootComponent>
                 <ChildComponent/>
             </RootComponent>
-        ).toJSON();
+        );
+
+        const fragment = tree.asFragment();
 
         expect(hookSpy).toHaveBeenCalledTimes(1);
         expect(hookSpy).toHaveReturnedWith(defaultThing);
-        expect(tree.children).toEqual([defaultThing.label]);
+        expect(fragment.children[0].textContent).toEqual(defaultThing.label);
     });
 
     test('resolves if injection/binding exists', () => {
@@ -260,14 +272,16 @@ describe('useOptionalInjection hook', () => {
             );
         };
 
-        const tree: any = renderer.create(
+        const tree = render(
             <RootComponent>
                 <ChildComponent/>
             </RootComponent>
-        ).toJSON();
+        );
+
+        const fragment = tree.asFragment();
 
         expect(hookSpy).toHaveBeenCalledTimes(1);
-        expect(tree.children).toEqual(['foo']);
+        expect(fragment.children[0].textContent).toEqual('foo');
     });
 });
 
@@ -288,13 +302,15 @@ describe('useAllInjections hook', () => {
             );
         };
 
-        const tree: any = renderer.create(
+        const tree = render(
             <RootComponent>
                 <ChildComponent/>
             </RootComponent>
-        ).toJSON();
+        );
+
+        const fragment = tree.asFragment();
 
         expect(hookSpy).toHaveBeenCalledTimes(1);
-        expect(tree.children).toEqual(['x,y,z']);
+        expect(fragment.children[0].textContent).toEqual('x,y,z');
     });
 });

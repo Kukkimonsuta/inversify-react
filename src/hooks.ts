@@ -17,7 +17,7 @@ import { InversifyReactContext } from './internal';
  * (which we don't need anyway)
  */
 function useLazyRef<T>(resolveValue: () => T): T {
-    const ref = useRef<{ v: T }>();
+    const ref = useRef<{ v: T }>(null);
     if (!ref.current) {
         ref.current = { v: resolveValue() };
     }

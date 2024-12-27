@@ -3,10 +3,11 @@ module.exports = {
     testMatch: [
         '**/test/**/*.ts?(x)'
     ],
-    globals: {
-        'ts-jest': {
+    testEnvironment: 'jsdom',
+    transform: {
+        '^.+.tsx?$': ['ts-jest', {
             tsconfig: './test/tsconfig.json'
-        }
+        }],
     },
     verbose: true,
 };

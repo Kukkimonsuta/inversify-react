@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createContext, useState } from 'react';
 import 'reflect-metadata';
 import { injectable, Container } from 'inversify';
-import * as renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 
 import { resolve, Provider } from '../src';
 
@@ -49,15 +49,17 @@ test('resolve using reflect-metadata', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <RootComponent>
             <ChildComponent />
         </RootComponent>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children[0].type).toBe('div');
-    expect(tree.children[0].children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].textContent).toEqual('foo');
 });
 
 test('resolve using service identifier (string)', () => {
@@ -73,14 +75,16 @@ test('resolve using service identifier (string)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('foo');
 });
 
 test('resolve using service identifier (symbol)', () => {
@@ -98,14 +102,16 @@ test('resolve using service identifier (symbol)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('foo');
 });
 
 test('resolve using service identifier (newable)', () => {
@@ -118,15 +124,17 @@ test('resolve using service identifier (newable)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <RootComponent>
             <ChildComponent />
         </RootComponent>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children[0].type).toBe('div');
-    expect(tree.children[0].children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].textContent).toEqual('foo');
 });
 
 // optional
@@ -146,14 +154,16 @@ test('resolve optional using reflect-metadata', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('foo');
 });
 
 test('resolve optional using service identifier (string)', () => {
@@ -172,14 +182,16 @@ test('resolve optional using service identifier (string)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('foo');
 });
 
 test('resolve optional using service identifier (symbol)', () => {
@@ -201,14 +213,16 @@ test('resolve optional using service identifier (symbol)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('foo');
 });
 
 test('resolve optional using service identifier (newable)', () => {
@@ -227,14 +241,16 @@ test('resolve optional using service identifier (newable)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('foo');
 });
 
 // all
@@ -253,12 +269,14 @@ test('resolve all using reflect-metadata [cannot be done, not enough information
     }
 
     expect(() => {
-        const tree: any = renderer.create(
+        const tree = render(
             <Provider container={container}>
                 <ChildComponent />
             </Provider>
-        ).toJSON();
-    }).toThrowError("No matching bindings found for serviceIdentifier: Array");
+        );
+
+    const fragment = tree.asFragment();
+    }).toThrow("No matching bindings found for serviceIdentifier: Array");
 });
 
 test('resolve all using service identifier (string)', () => {
@@ -275,14 +293,16 @@ test('resolve all using service identifier (string)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('fooextendedfoo');
 });
 
 test('resolve all using service identifier (symbol)', () => {
@@ -301,14 +321,16 @@ test('resolve all using service identifier (symbol)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('fooextendedfoo');
 });
 
 test('resolve all using service identifier (newable)', () => {
@@ -325,14 +347,16 @@ test('resolve all using service identifier (newable)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('fooextendedfoo');
 });
 
 // optional all
@@ -354,12 +378,14 @@ test('resolve optional all using reflect-metadata [cannot be done, not enough in
     }
 
     expect(() => {
-        const tree: any = renderer.create(
+        const tree = render(
             <Provider container={container}>
                 <ChildComponent />
             </Provider>
-        ).toJSON();
-    }).toThrowError("No matching bindings found for serviceIdentifier: Array");
+        );
+
+    const fragment = tree.asFragment();
+    }).toThrow("No matching bindings found for serviceIdentifier: Array");
 });
 
 test('resolve optional all using service identifier (string)', () => {
@@ -379,14 +405,16 @@ test('resolve optional all using service identifier (string)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('fooextendedfoo');
 });
 
 test('resolve optional all using service identifier (symbol)', () => {
@@ -408,14 +436,16 @@ test('resolve optional all using service identifier (symbol)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('fooextendedfoo');
 });
 
 test('resolve optional all using service identifier (newable)', () => {
@@ -435,14 +465,16 @@ test('resolve optional all using service identifier (newable)', () => {
         }
     }
 
-    const tree: any = renderer.create(
+    const tree = render(
         <Provider container={container}>
             <ChildComponent />
         </Provider>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children).toEqual(['foo', 'extendedfoo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].textContent).toEqual('fooextendedfoo');
 });
 
 describe('limitations', () => {
@@ -478,11 +510,11 @@ describe('limitations', () => {
                 }
             }
 
-            renderer.create(
+            render(
                 <RootComponent>
                     <ChildComponent />
                 </RootComponent>
             )
-        }).toThrowError('Component `ChildComponent` already has `contextType: userland-context` defined');
+        }).toThrow('Component `ChildComponent` already has `contextType: userland-context` defined');
     });
 });

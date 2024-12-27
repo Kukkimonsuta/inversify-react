@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import 'reflect-metadata';
 import { injectable, interfaces, Container } from 'inversify';
-import * as renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 
 import { resolve, Provider } from '../src';
 
@@ -16,8 +16,8 @@ interface RootComponentProps {
 }
 
 class RootComponent extends React.Component<RootComponentProps> {
-    constructor(props: {}, context: {}) {
-        super(props, context);
+    constructor(props: {}) {
+        super(props);
 
         this.container = new Container();
         this.container.bind(Foo).toSelf();
@@ -40,30 +40,34 @@ class ChildComponent extends React.Component {
 }
 
 test('provider provides to immediate children', () => {
-    const tree: any = renderer.create(
+    const tree = render(
         <RootComponent>
             <ChildComponent />
         </RootComponent>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children[0].type).toBe('div');
-    expect(tree.children[0].children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].textContent).toEqual('foo');
 });
 
 test('provider provides services to deep children', () => {
-    const tree: any = renderer.create(
+    const tree = render(
         <RootComponent>
             <div>
                 <ChildComponent />
             </div>
         </RootComponent>
-    ).toJSON();
+    );
 
-    expect(tree.type).toBe('div');
-    expect(tree.children[0].type).toBe('div');
-    expect(tree.children[0].children[0].type).toBe('div');
-    expect(tree.children[0].children[0].children).toEqual(['foo']);
+    const fragment = tree.asFragment();
+
+    expect(fragment.children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].children[0].nodeName).toBe('DIV');
+    expect(fragment.children[0].children[0].children[0].textContent).toEqual('foo');
 });
 
 describe('hierarchy of containers', () => {
@@ -72,16 +76,18 @@ describe('hierarchy of containers', () => {
         outerContainer.bind(Foo).toConstantValue({ name: 'outer' });
         const innerContainer = new Container();
 
-        const tree: any = renderer.create(
+        const tree = render(
             <Provider container={outerContainer}>
                 <Provider container={innerContainer}>
                     <ChildComponent />
                 </Provider>
             </Provider>
-        ).toJSON();
+        );
+
+        const fragment = tree.asFragment();
 
         expect(innerContainer.parent).toBe(outerContainer);
-        expect(tree.children).toEqual(['outer']);
+        expect(fragment.children[0].textContent).toEqual('outer');
     });
 
     test(`"standalone" provider isolates container`, () => {
@@ -90,14 +96,14 @@ describe('hierarchy of containers', () => {
         const innerContainer = new Container();
 
         expect(() => {
-            renderer.create(
+            render(
                 <Provider container={outerContainer}>
                     <Provider container={innerContainer} standalone={true}>
                         <ChildComponent />
                     </Provider>
                 </Provider>
-            ).toJSON();
-        }).toThrowError('No matching bindings found for serviceIdentifier: Foo');
+            );
+        }).toThrow('No matching bindings found for serviceIdentifier: Foo');
 
         expect(innerContainer.parent).toBeNull();
     });
@@ -131,17 +137,24 @@ describe('Provider DX', () => {
             );
         };
 
-        const tree: any = renderer.create(
+        const tree = render(
             <FunctionalRootComponent>
                 <ChildComponent />
             </FunctionalRootComponent>
-        ).toJSON();
+        );
+
+        const fragment = tree.asFragment();
 
         expect(renderCount).toBe(1);
         expect(spy).toHaveBeenCalledTimes(1);
-        expect(tree.children).toEqual(['foo']);
+        expect(fragment.children[0].textContent).toEqual('foo');
 
-        renderer.act(forceUpdate);
+        tree.rerender(
+            <FunctionalRootComponent>
+                <ChildComponent />
+            </FunctionalRootComponent>
+        );
+
         expect(renderCount).toBe(2);
         expect(spy).toHaveBeenCalledTimes(1);
     });

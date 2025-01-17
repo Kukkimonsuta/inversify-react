@@ -89,3 +89,25 @@ export function useAllInjections<T>(serviceId: interfaces.ServiceIdentifier<T>):
         container => container.getAll(serviceId)
     );
 }
+
+/**
+ * uses container.getNamed(serviceIdentifier, named)
+ * https://github.com/inversify/InversifyJS/blob/master/wiki/container_api.md#containergetnamedtserviceidentifier-interfacesserviceidentifiert-named-string--number--symbol-t
+ * https://github.com/inversify/InversifyJS/blob/master/wiki/named_bindings.md
+ */
+export function useNamedInjection<T>(serviceId: interfaces.ServiceIdentifier<T>, named: string | number | symbol): T {
+    return useContainer(
+        container => container.getNamed<T>(serviceId, named)
+    );
+}
+
+/**
+ * uses container.getTagged(serviceIdentifier, key, value)
+ * https://github.com/inversify/InversifyJS/blob/master/wiki/container_api.md#containergettaggedtserviceidentifier-interfacesserviceidentifiert-key-string--number--symbol-value-unknown-t
+ * https://github.com/inversify/InversifyJS/blob/master/wiki/tagged_bindings.md
+ */
+export function useTaggedInjection<T>(serviceId: interfaces.ServiceIdentifier<T>, key: string | number | symbol, value: unknown): T {
+    return useContainer(
+        container => container.getTagged<T>(serviceId, key, value)
+    );
+}

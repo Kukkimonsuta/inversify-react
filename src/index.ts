@@ -5,4 +5,6 @@ export {
     useContainer,
     useInjection,
     useOptionalInjection,
+    useNamedInjection,
+    useTaggedInjection,
 } from './hooks';

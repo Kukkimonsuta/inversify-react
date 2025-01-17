@@ -12,6 +12,8 @@ import {
     useContainer,
     useInjection,
     useOptionalInjection,
+    useNamedInjection,
+    useTaggedInjection,
 } from '../src';
 
 // We want to test types around hooks with signature overloads (as it's more complex),
@@ -39,6 +41,9 @@ class Bar {
     }
 }
 
+const aName = 'a-name';
+const bName = 'b-name';
+const rootTag = 'tag';
 const aTag = 'a-tag';
 const bTag = 'b-tag';
 const multiId = Symbol('multi-id');
@@ -55,9 +60,10 @@ const RootComponent: React.FC<RootComponentProps> = ({ children }) => {
     const [container] = useState(() => {
         const c = new Container();
         c.bind(Foo).toSelf();
-        c.bind(Bar).toDynamicValue(() => new Bar('a')).whenTargetNamed(aTag);
-        c.bind(Bar).toDynamicValue(() => new Bar('a')).whenTargetTagged(aTag, 'a');
-        c.bind(Bar).toDynamicValue(() => new Bar('b')).whenTargetNamed(bTag);
+        c.bind(Bar).toDynamicValue(() => new Bar('aNamed')).whenTargetNamed(aName);
+        c.bind(Bar).toDynamicValue(() => new Bar('bNamed')).whenTargetNamed(bName);
+        c.bind(Bar).toDynamicValue(() => new Bar('aTagged')).whenTargetTagged(rootTag, aTag);
+        c.bind(Bar).toDynamicValue(() => new Bar('bTagged')).whenTargetTagged(rootTag, bTag);
         c.bind(multiId).toConstantValue('x');
         c.bind(multiId).toConstantValue('y');
         c.bind(multiId).toConstantValue('z');
@@ -186,6 +192,52 @@ describe('useInjection hook', () => {
 
         expect(fragment.children[0].nodeName).toBe('DIV');
         expect(fragment.children[0].textContent).toEqual('foo');
+    });
+});
+
+describe('useNamedInjection hook', () => {
+    test('resolves using service identifier and name constraint', () => {
+        const ChildComponent = () => {
+            const aBar = useNamedInjection(Bar, aName);
+            const bBar = useNamedInjection(Bar, bName);
+
+            return <div>{aBar.name},{bBar.name}</div>;
+        };
+
+        const tree = render(
+            <RootComponent>
+                <ChildComponent />
+            </RootComponent>
+        );
+
+        const fragment = tree.asFragment();
+
+        expect(fragment.children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].children[0].textContent).toEqual("bar-aNamed,bar-bNamed");
+    });
+});
+
+describe('useTaggedInjection hook', () => {
+    test('resolves using service identifier and tag constraint', () => {
+        const ChildComponent = () => {
+            const aBar = useTaggedInjection(Bar, rootTag, aTag);
+            const bBar = useTaggedInjection(Bar, rootTag, bTag);
+
+            return <div>{aBar.name},{bBar.name}</div>;
+        };
+
+        const tree = render(
+            <RootComponent>
+                <ChildComponent />
+            </RootComponent>
+        );
+
+        const fragment = tree.asFragment();
+
+        expect(fragment.children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].children[0].nodeName).toBe('DIV');
+        expect(fragment.children[0].children[0].textContent).toEqual("bar-aTagged,bar-bTagged");
     });
 });
 

@@ -157,6 +157,7 @@ class AppOrModuleRoot extends React.Component {
 const foo = useInjection(Foo);
 ```
 * very similar to [React.useContext](https://reactjs.org/docs/hooks-reference.html#usecontext) hook, resolves dependency by id
+* To resolve named bindings, use the `useNamedInjection` hook; for tagged bindings, use the `useTaggedInjection` hook.
 
 ### useOptionalInjection
 
